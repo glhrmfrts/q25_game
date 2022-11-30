@@ -746,9 +746,16 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 	}
 #endif
 
+	const char* current_weapon_classname = ent->client->pers.weapon->classname;
+	qboolean is_ssg = (0 == strcmp(current_weapon_classname, "weapon_supershotgun"));
+	qboolean is_mg = (0 == strcmp(current_weapon_classname, "weapon_machinegun"));
+	qboolean is_chaingun = (0 == strcmp(current_weapon_classname, "weapon_chaingun"));
+	qboolean is_rocket = (0 == strcmp(current_weapon_classname, "weapon_rocketlauncher"));
+	qboolean is_hyper = (0 == strcmp(current_weapon_classname, "weapon_hyperblaster"));
+
 	if (ent->client->weaponstate == WEAPON_DROPPING)
 	{
-		if (ent->client->ps.gunframe == FRAME_DEACTIVATE_LAST)
+		if (ent->client->ps.gunframe >= FRAME_DEACTIVATE_LAST)
 		{
 			ChangeWeapon (ent);
 			return;
@@ -764,18 +771,21 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 			else
 			{
 				ent->s.frame = FRAME_pain304+1;
-				ent->client->anim_end = FRAME_pain301;
-				
+				ent->client->anim_end = FRAME_pain301;	
 			}
 		}
 
-		ent->client->ps.gunframe++;
+		ent->client->ps.gunframe += 2;
+		if (is_ssg && ent->client->ps.gunframe > 61) ent->client->ps.gunframe = 61;
+		if (is_mg && ent->client->ps.gunframe > 49) ent->client->ps.gunframe = 49;
+		if (is_rocket && ent->client->ps.gunframe > 54) ent->client->ps.gunframe = 54;
+		if (is_hyper && ent->client->ps.gunframe > 53) ent->client->ps.gunframe = 53;
 		return;
 	}
 
 	if (ent->client->weaponstate == WEAPON_ACTIVATING)
 	{
-		if (ent->client->ps.gunframe == FRAME_ACTIVATE_LAST)
+		if (ent->client->ps.gunframe >= FRAME_ACTIVATE_LAST)
 		{
 			ent->client->weaponstate = WEAPON_READY;
 			ent->client->ps.gunframe = FRAME_IDLE_FIRST;
@@ -789,11 +799,12 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 			return;
 		}
 
-		ent->client->ps.gunframe++;
+		ent->client->ps.gunframe += 2;
 		return;
 	}
 
-	if ((ent->client->newweapon) && (ent->client->weaponstate != WEAPON_FIRING))
+	qboolean can_change_while_firing = !((is_chaingun || is_hyper) && (ent->client->weaponstate == WEAPON_FIRING));
+	if ((ent->client->newweapon) && can_change_while_firing)
 	{
 		ent->client->weaponstate = WEAPON_DROPPING;
 		ent->client->ps.gunframe = FRAME_DEACTIVATE_FIRST;
