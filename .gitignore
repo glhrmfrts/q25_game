@@ -1,0 +1,24 @@
+# ignore all make dependency files and linux object binaries
+*.d
+*.o
+bin/
+
+# ignore all the windows binaries - they shouldn't be committed!
+Debug/
+Release/
+.vs/
+*.log
+*.ncb
+*.opt
+*.plg
+*.suo
+*.user
+*.aps
+*.clw
+*.pdb
+*.ilk
+
+# ignore these for obvious reasons!
+bitbucket_set_app_pwd.sh
+push_bitbucket.sh
+pull_bitbucket.sh
