@@ -1530,6 +1530,7 @@
 {"berserk_dead", (byte *)berserk_dead},
 {"berserk_pain", (byte *)berserk_pain},
 {"berserk_melee", (byte *)berserk_melee},
+{"berserk_attack_running_club", (byte *)berserk_attack_running_club},
 {"berserk_strike", (byte *)berserk_strike},
 {"berserk_attack_club", (byte *)berserk_attack_club},
 {"berserk_swing", (byte *)berserk_swing},

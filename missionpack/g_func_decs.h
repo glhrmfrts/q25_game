@@ -1530,6 +1530,7 @@ extern void berserk_die ( edict_t * self , edict_t * inflictor , edict_t * attac
 extern void berserk_dead ( edict_t * self ) ;
 extern void berserk_pain ( edict_t * self , edict_t * other , float kick , int damage ) ;
 extern void berserk_melee ( edict_t * self ) ;
+extern void berserk_attack_running_club ( edict_t * self ) ;
 extern void berserk_strike ( edict_t * self ) ;
 extern void berserk_attack_club ( edict_t * self ) ;
 extern void berserk_swing ( edict_t * self ) ;

@@ -668,6 +668,7 @@
 {"berserk_move_death1", &berserk_move_death1},
 {"berserk_move_pain2", &berserk_move_pain2},
 {"berserk_move_pain1", &berserk_move_pain1},
+{"berserk_move_attack_running_club", &berserk_move_attack_running_club},
 {"berserk_move_attack_strike", &berserk_move_attack_strike},
 {"berserk_move_attack_club", &berserk_move_attack_club},
 {"berserk_move_attack_spike", &berserk_move_attack_spike},

@@ -205,7 +205,15 @@ mmove_t berserk_move_attack_club = {FRAME_att_c9, FRAME_att_c20, berserk_frames_
 
 void berserk_strike (edict_t *self)
 {
-	//FIXME play impact sound
+	vec3_t aim;
+
+	if (!self)
+	{
+		return;
+	}
+
+	VectorSet(aim, MELEE_DISTANCE, 0, -6);
+	fire_hit(self, aim, (10 + (rand() % 6)), 400);       /* Slower attack */
 }
 
 
@@ -230,14 +238,72 @@ mframe_t berserk_frames_attack_strike [] =
 mmove_t berserk_move_attack_strike = {FRAME_att_c21, FRAME_att_c34, berserk_frames_attack_strike, berserk_run};
 
 
+void
+berserk_attack_running_club(edict_t* self)
+{
+	/* Same as regular club attack */
+	vec3_t aim;
+
+	if (!self)
+	{
+		return;
+	}
+
+	VectorSet(aim, MELEE_DISTANCE, self->mins[0], -4);
+	fire_hit(self, aim, (5 + (rand() % 6)), 400);       /* Slower attack */
+}
+
+mframe_t berserk_frames_attack_running_club[] = {
+	{ai_charge, 21, NULL},
+	{ai_charge, 11, NULL},
+	{ai_charge, 21, NULL},
+	{ai_charge, 25, NULL},
+	{ai_charge, 18, NULL},
+	{ai_charge, 19, NULL},
+	{ai_charge, 21, NULL},
+	{ai_charge, 11, NULL},
+	{ai_charge, 21, NULL},
+	{ai_charge, 25, NULL},
+	{ai_charge, 18, NULL},
+	{ai_charge, 19, NULL},
+	{ai_charge, 21, NULL},
+	{ai_charge, 11, NULL},
+	{ai_charge, 21, NULL},
+	{ai_charge, 25, berserk_swing},
+	{ai_charge, 18, berserk_attack_running_club},
+	{ai_charge, 19, NULL}
+};
+
+mmove_t berserk_move_attack_running_club =
+{
+	FRAME_r_att1,
+	FRAME_r_att18,
+	berserk_frames_attack_running_club,
+	berserk_run
+};
+
+
 void berserk_melee (edict_t *self)
 {
 	monster_done_dodge (self);
 
-	if ((rand() % 2) == 0)
+	const int r = rand() % 4;
+	if (r == 0)
+	{
 		self->monsterinfo.currentmove = &berserk_move_attack_spike;
-	else
+	}
+	else if (r == 1)
+	{
+		self->monsterinfo.currentmove = &berserk_move_attack_strike;
+	}
+	else if (r == 2)
+	{
 		self->monsterinfo.currentmove = &berserk_move_attack_club;
+	}
+	else
+	{
+		self->monsterinfo.currentmove = &berserk_move_attack_running_club;
+	}
 }
 
 
