@@ -346,7 +346,13 @@ mmove_t gladiator_move_death = {FRAME_death1, FRAME_death22, gladiator_frames_de
 
 void gladiator_die(edict_t* self, edict_t* inflictor, edict_t* attacker, int damage, vec3_t point)
 {
-	int        n;
+	// Put first to see if this solveth the LOOPIN' SOUNDS
+	if (self->deadflag == DEAD_DEAD)
+	{
+		return;
+	}
+	
+	int n;
 
 	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;
 
@@ -362,9 +368,6 @@ void gladiator_die(edict_t* self, edict_t* inflictor, edict_t* attacker, int dam
 		self->deadflag = DEAD_DEAD;
 		return;
 	}
-
-	if (self->deadflag == DEAD_DEAD)
-		return;
 
 	// regular death
 	if (strcmp(self->classname, "monster_bfgladiator") == 0) {
