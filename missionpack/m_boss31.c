@@ -489,7 +489,7 @@ void jorgBFG (edict_t *self)
 							 int kick, 
 							 float damage_radius, 
 							 int flashtype)*/
-	monster_fire_bfg (self, start, dir, 50, 300, 100, 200, MZ2_JORG_BFG_1);
+	monster_fire_bfg (self, start, dir, 50, 300, 100, 200, MZ2_JORG_BFG_1, false);
 }	
 
 void jorg_firebullet_right (edict_t *self)

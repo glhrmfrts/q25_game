@@ -312,24 +312,24 @@ void turret_breach_fire (edict_t *self)
 					{
 						if (self->moreflags & FL2_TURRET_DOUBLE_ALT_FIRING)
 						{
-							fire_bfg (owner, start2, forward2, damage, speed, 1000);
+							fire_bfg (owner, start2, forward2, damage, speed, 1000, false);
 							self->moreflags &= ~FL2_TURRET_DOUBLE_ALT_FIRING;
 						}
 						else
 						{
-							fire_bfg (owner, start, forward, damage, speed, 1000);
+							fire_bfg (owner, start, forward, damage, speed, 1000, false);
 							self->moreflags |= FL2_TURRET_DOUBLE_ALT_FIRING;
 						}
 					}
 					else
 					{
-						fire_bfg (owner, start, forward, damage, speed, 1000);
-						fire_bfg (owner, start2, forward2, damage, speed, 1000);
+						fire_bfg (owner, start, forward, damage, speed, 1000, false);
+						fire_bfg (owner, start2, forward2, damage, speed, 1000, false);
 					}
 				}
 				else
 //CW--
-					fire_bfg (owner, start, forward, damage, speed, 1000);
+					fire_bfg (owner, start, forward, damage, speed, 1000, false);
 
 			//	gi.positioned_sound (start, self, CHAN_WEAPON, gi.soundindex("weapons/laser2.wav"), 1, ATTN_NORM, 0);
 				gi.positioned_sound (start, self, CHAN_WEAPON, gi.soundindex("makron/bfg_fire.wav"), 1, ATTN_NORM, 0);

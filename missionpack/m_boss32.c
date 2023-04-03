@@ -421,7 +421,7 @@ void makronBFG (edict_t *self)
 	VectorSubtract (vec, start, dir);
 	VectorNormalize (dir);
 	gi.sound (self, CHAN_VOICE, sound_attack_bfg, 1, ATTN_NORM, 0);
-	monster_fire_bfg (self, start, dir, 50, 300, 100, 300, MZ2_MAKRON_BFG);
+	monster_fire_bfg (self, start, dir, 50, 300, 100, 300, MZ2_MAKRON_BFG, false);
 }
 
 

@@ -2535,7 +2535,7 @@ void weapon_bfg_fire (edict_t *ent, qboolean altfire)
 	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
 */
 
-	fire_bfg (ent, start, forward, damage, (int)sk_bfg_speed->value, damage_radius);	// was 400
+	fire_bfg (ent, start, forward, damage, (int)sk_bfg_speed->value, damage_radius, false);	// was 400
 
 	ent->client->ps.gunframe++;
 

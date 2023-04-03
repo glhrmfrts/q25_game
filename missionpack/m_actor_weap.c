@@ -794,7 +794,7 @@ void actorBFG (edict_t *self)
 		ActorTarget (self, target);
 		VectorSubtract (target, start, forward);
 		VectorNormalize (forward);
-		fire_bfg (self, start, forward, 500, 300, 1000);
+		fire_bfg (self, start, forward, 500, 300, 1000, false);
 		self->endtime = level.time + 1;
 		if (developer->value)
 		{
