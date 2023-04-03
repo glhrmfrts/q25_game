@@ -194,7 +194,7 @@ void GladiatorGun(edict_t* self)
 	VectorNormalize(dir);
 
 	if (strcmp(self->classname, "monster_bfgladiator") == 0) {
-		monster_fire_bfg(self, start, dir, 25, 300, 100, 300, MZ2_MAKRON_BFG);
+		monster_fire_bfg(self, start, dir, 25, 300, 100, 300, MZ2_MAKRON_BFG, true);
 	}
 	else {
 		monster_fire_railgun(self, start, dir, 50, 100, MZ2_GLADIATOR_RAILGUN_1);

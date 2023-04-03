@@ -745,7 +745,7 @@ void use_target_blaster (edict_t *self, edict_t *other, edict_t *activator)
 	}
 	else if (self->sounds == 3)
 	{
-		fire_bfg(self, start, movedir, self->dmg, self->speed, self->dmg);
+		fire_bfg(self, start, movedir, self->dmg, self->speed, self->dmg, false);
 		gi.positioned_sound (start, self, CHAN_WEAPON, gi.soundindex("weapons/laser2.wav"), 1, ATTN_NORM, 0);
 	}
 	else if (self->sounds == 4)

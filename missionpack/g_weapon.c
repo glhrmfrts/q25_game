@@ -1,5 +1,11 @@
 #include "g_local.h"
 
+// BFG_HOMING_SENSITIVITY valid ranges:
+// 0.0 (disables homing) to 1.0 (changes direction quickly)
+#define BFG_HOMING_SENSITIVITY 0.5
+// SF_BFG_HOMING spawn flag for bfg blast entity class
+#define SF_BFG_HOMING 1
+
 /*
 =================
 check_dodge
@@ -2005,6 +2011,9 @@ void bfg_think (edict_t *self)
 	vec3_t	end;
 	int		dmg;
 	trace_t	tr;
+	// Phatman: Used for homing BFG
+	edict_t *closest = NULL;
+	vec_t   distance;
 
 	if (deathmatch->value)
 		dmg = sk_bfg_damage2_dm->value; //was 5
@@ -2061,9 +2070,44 @@ void bfg_think (edict_t *self)
 				gi.multicast (tr.endpos, MULTICAST_PVS);
 				break;
 			}
+			// Phatman: Homing BFG shot
+			if ((self->spawnflags & SF_BFG_HOMING) && tr.ent->client)
+			{
+				vec3_t diff;
+				vec_t len;
+				VectorSubtract(self->s.origin, tr.ent->s.origin, diff);
+				len = VectorLength(diff);
+				if (!closest || len < distance)
+				{
+					closest = ent;
+					distance = len;
+				}
+			}
 
 			ignore = tr.ent;
 			VectorCopy (tr.endpos, start);
+		}
+
+		// Phatman: Homing BFG shot - based on homing_think
+		if ((self->spawnflags & SF_BFG_HOMING) && closest)
+		{
+			static const vec_t HomingSensitivity = 
+				(BFG_HOMING_SENSITIVITY) < 0.0 ? 0.0 : 
+				(BFG_HOMING_SENSITIVITY) > 1.0 ? 0.5 : 
+				(BFG_HOMING_SENSITIVITY);
+			vec3_t new_velocity;
+			vec_t speed;
+			VectorMA(closest->absmin, 0.5, closest->size, point);
+			VectorCopy(self->velocity, new_velocity);
+			VectorNormalize(new_velocity);
+			VectorSubtract (point, self->s.origin, dir);
+			VectorNormalize (dir);
+			VectorScale (dir, HomingSensitivity, dir);
+			VectorAdd (dir, new_velocity, dir);
+			VectorNormalize (dir);
+			VectorCopy (dir, self->movedir);
+			speed = VectorLength(self->velocity);
+			VectorScale (dir, speed, self->velocity);
 		}
 
 		gi.WriteByte (svc_temp_entity);
@@ -2081,7 +2125,7 @@ void bfg_think (edict_t *self)
 }
 
 
-void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius)
+void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, qboolean homing)
 {
 	edict_t	*bfg;
 
@@ -2105,6 +2149,8 @@ void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, f
 	bfg->dmg_radius = damage_radius;
 	bfg->classname = "bfg blast";
 	bfg->s.sound = gi.soundindex ("weapons/bfg__l1a.wav");
+	if (homing) // Phatman: Required for homing BFG shots
+		bfg->spawnflags |= SF_BFG_HOMING;
 
 	bfg->think = bfg_think;
 	bfg->nextthink = level.time + FRAMETIME;

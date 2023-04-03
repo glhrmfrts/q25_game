@@ -293,7 +293,7 @@ void monster_fire_railgun (edict_t *self, vec3_t start, vec3_t aimdir, int damag
 	gi.multicast (start, MULTICAST_PVS);
 }
 
-void monster_fire_bfg (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int kick, float damage_radius, int flashtype)
+void monster_fire_bfg (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int kick, float damage_radius, int flashtype, qboolean homing)
 {
 	// Zaero add
 	if (EMPNukeCheck(self, start))
@@ -303,7 +303,7 @@ void monster_fire_bfg (edict_t *self, vec3_t start, vec3_t aimdir, int damage, i
 	}
 	// end Zaero
 
-	fire_bfg (self, start, aimdir, damage, speed, damage_radius);
+	fire_bfg (self, start, aimdir, damage, speed, damage_radius, homing);
 
 	gi.WriteByte (svc_muzzleflash2);
 	gi.WriteShort (self - g_edicts);
