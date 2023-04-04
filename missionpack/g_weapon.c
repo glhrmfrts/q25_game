@@ -136,7 +136,7 @@ This is an internal support routine used for bullet/pellet based weapons.
 		vectoangles (aimdir, dir);
 		AngleVectors (dir, forward, right, up);
 
-		r = crandom()*hspread; 
+		r = crandom()*hspread;
 		u = crandom()*vspread;
 		// Knightmare- adjust spread for expanded world size
 #ifdef KMQUAKE2_ENGINE_MOD
@@ -967,7 +967,7 @@ qboolean AimGrenade (edict_t *self, vec3_t start, vec3_t target, vec_t speed, ve
 		xo = sqrt (from_origin[0] * from_origin[0] + from_origin[1] * from_origin[1]);
 	}
 
-	// If resulting aim vector is looking straight up or straight down, we're 
+	// If resulting aim vector is looking straight up or straight down, we're
 	// done. Actually now that I write this down and think about it... should
 	// probably check straight up to make sure grenade will actually reach the
 	// target.
@@ -999,7 +999,7 @@ qboolean AimGrenade (edict_t *self, vec3_t start, vec3_t target, vec_t speed, ve
 	VectorCopy (aim, last_aim);
 
 	// Unfortunately there is no closed-form solution for this problem,
-	// so we creep up on an answer and balk if it takes more than 
+	// so we creep up on an answer and balk if it takes more than
 	// 10 iterations to converge to the tolerance we'll accept.
 	for (i=0; i<10 && fabs(v_error) > 4 && fabs(v_error) < fabs(last_error); i++)
 	{
@@ -1023,7 +1023,7 @@ qboolean AimGrenade (edict_t *self, vec3_t start, vec3_t target, vec_t speed, ve
 		if (fabs(v_error) < fabs(last_error))
 			VectorCopy (aim, last_aim);
 	}
-	
+
 	if (i >= 10 || v_error > 64)
 		return false;
 
@@ -1038,18 +1038,18 @@ qboolean AimGrenade (edict_t *self, vec3_t start, vec3_t target, vec_t speed, ve
 			VectorSubtract (aim_point, start, from_muzzle);
 		}
 	}
-	
-	// Sanity check... if launcher is at the same elevation or a bit above the 
-	// target entity, check to make sure he won't bounce grenades off the 
-	// top of a doorway or other obstruction. If he WOULD do that, then figure out 
-	// the max elevation angle that will get the grenade through the door, and 
+
+	// Sanity check... if launcher is at the same elevation or a bit above the
+	// target entity, check to make sure he won't bounce grenades off the
+	// top of a doorway or other obstruction. If he WOULD do that, then figure out
+	// the max elevation angle that will get the grenade through the door, and
 	// hope we get a good bounce.
 	if ( (start[2] - target[2] < 160) &&
 		(start[2] - target[2] > -16)   )
 	{
 		trace_t	tr;
 		vec3_t	dist;
-		
+
 		if (isProx)
 			tr = gi.trace(start, proxMins, proxMaxs, aim_point, self, MASK_SOLID);
 		else
@@ -2091,9 +2091,9 @@ void bfg_think (edict_t *self)
 		// Phatman: Homing BFG shot - based on homing_think
 		if ((self->spawnflags & SF_BFG_HOMING) && closest)
 		{
-			static const vec_t HomingSensitivity = 
-				(BFG_HOMING_SENSITIVITY) < 0.0 ? 0.0 : 
-				(BFG_HOMING_SENSITIVITY) > 1.0 ? 0.5 : 
+			static const vec_t HomingSensitivity =
+				(BFG_HOMING_SENSITIVITY) < 0.0 ? 0.0 :
+				(BFG_HOMING_SENSITIVITY) > 1.0 ? 1.0 :
 				(BFG_HOMING_SENSITIVITY);
 			vec3_t new_velocity;
 			vec_t speed;

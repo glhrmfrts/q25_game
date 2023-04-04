@@ -282,7 +282,7 @@ void DoRespawn (edict_t *ent)
 		edict_t *newEnt;
 
 		newEnt = DoRandomRespawn (ent);
-		
+
 		// if we've changed entities, then do some sleight of hand.
 		// otherwise, the old entity will respawn
 		if (newEnt)
@@ -362,7 +362,7 @@ qboolean Pickup_Powerup (edict_t *ent, edict_t *other)
 		else
 			other->client->flashlight_cell_usage = 0;
 	}
-	
+
 	if (deathmatch->value)
 	{
 		if (!(ent->spawnflags & DROPPED_ITEM) )
@@ -1120,6 +1120,25 @@ void	Use_Silencer (edict_t *ent, gitem_t *item)
 
 qboolean Pickup_Key (edict_t *ent, edict_t *other)
 {
+	// Q25 gnemeth - certain key items will increase the skill_stage
+	static const char* stageItems[] = {
+		"key_pyramid",
+		"key_commander_head",
+		"key_pass",
+		"key_data_spinner",
+		"key_airstrike_target"
+	};
+	for (int i = 0; i < sizeof(stageItems)/sizeof(stageItems[0]); i++)
+	{
+		if (0 == strcmp(ent->classname, stageItems[i]))
+		{
+			//NOTE(Fix): If we use cvar_set, that tries to change it as if the user
+			//     	     entered it via console. We have to make sure this increments.
+			gi.cvar_forceset("skill_stage", va("%d", (int)skill_stage->value + 1));
+			break;
+		}
+	}
+
 	if (coop->value)
 	{
 		if (strcmp(ent->classname, "key_power_cube") == 0)
@@ -1215,33 +1234,51 @@ void SetAmmoPickupValues (void)
 {
 	gitem_t		*item;
 
+	// Q25 gnemeth - extra ammo for early "stages" for better balance
+	enum {
+		MAX_STAGE_FOR_BONUS = 3,
+		STAGE_BONUS_SHELLS = 5,
+		STAGE_BONUS_BULLETS = 10,
+		STAGE_BONUS_GRENADES = 1,
+		STAGE_BONUS_ROCKETS = 1,
+		STAGE_BONUS_CELLS = 10,
+		STAGE_BONUS_SLUGS = 1,
+	};
+	int extraStage = max(MAX_STAGE_FOR_BONUS - (int)skill_stage->value, 0);
+	int extraShells = STAGE_BONUS_SHELLS * extraStage;
+	int extraBullets = STAGE_BONUS_BULLETS * extraStage;
+	int extraGrenades = STAGE_BONUS_GRENADES * extraStage;
+	int extraRockets = STAGE_BONUS_ROCKETS * extraStage;
+	int extraCells = STAGE_BONUS_CELLS * extraStage;
+	int extraSlugs = STAGE_BONUS_SLUGS * extraStage;
+
 	item = FindItem("Shells");
 	if (item)
-		item->quantity = sk_box_shells->value;
+		item->quantity = sk_box_shells->value + extraShells;
 
 	item = FindItem("Bullets");
 	if (item)
-		item->quantity = sk_box_bullets->value;
+		item->quantity = sk_box_bullets->value + extraBullets;
 
 	item = FindItem("Grenades");
 	if (item)
-		item->quantity = sk_box_grenades->value;
+		item->quantity = sk_box_grenades->value + extraGrenades;
 
 	item = FindItem("Rockets");
 	if (item)
-		item->quantity = sk_box_rockets->value;
+		item->quantity = sk_box_rockets->value + extraRockets;
 
 	item = FindItem("Homing Rockets");
 	if (item)
-		item->quantity = sk_box_rockets->value;
+		item->quantity = sk_box_rockets->value + extraRockets;
 
 	item = FindItem("Cells");
 	if (item)
-		item->quantity = sk_box_cells->value;
+		item->quantity = sk_box_cells->value + extraCells;
 
 	item = FindItem("Slugs");
 	if (item)
-		item->quantity = sk_box_slugs->value;
+		item->quantity = sk_box_slugs->value + extraSlugs;
 
 	item = FindItem("Magslug");
 	if (item)
@@ -1297,7 +1334,7 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 	int			oldcount;
 	int			count;
 	qboolean	weapon;
-		
+
 	// Knightmare- override ammo pickup values with cvars
 	SetAmmoPickupValues ();
 
@@ -1341,7 +1378,7 @@ void Drop_Ammo (edict_t *ent, gitem_t *item)
 	else
 		dropped->count = ent->client->pers.inventory[index];
 
-	if (ent->client->pers.weapon && 
+	if (ent->client->pers.weapon &&
 		ent->client->pers.weapon->tag == AMMO_GRENADES &&
 		item->tag == AMMO_GRENADES &&
 		ent->client->pers.inventory[index] - dropped->count <= 0) {
@@ -1405,7 +1442,7 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 
 	// stimpacks shouldn't rot away
 /*	if (ent->style & HEALTH_IGNORE_MAX
-		&& other->base_health >= other->max_health && other->health >= other->base_health) 
+		&& other->base_health >= other->max_health && other->health >= other->base_health)
 		other->base_health += ent->count;
 */
 	// PMM - health sound fix
@@ -1789,7 +1826,7 @@ void Touch_Item (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf
 	if (taken)
 	{
 		// flash the screen
-		other->client->bonus_alpha = 0.25;	
+		other->client->bonus_alpha = 0.25;
 
 		// show icon and name on status bar
 		other->client->ps.stats[STAT_PICKUP_ICON] = gi.imageindex(ent->item->icon);
@@ -1866,7 +1903,7 @@ void Touch_Q1Backpack (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t
 	if (taken)
 	{
 		// flash the screen
-		other->client->bonus_alpha = 0.25;	
+		other->client->bonus_alpha = 0.25;
 
 		// show icon and name on status bar
 		other->client->ps.stats[STAT_PICKUP_ICON] = gi.imageindex(ent->item->icon);
@@ -1954,7 +1991,7 @@ edict_t *Drop_Item (edict_t *ent, gitem_t *item)
 	VectorSet (dropped->maxs, 16, 16, 16);
 	gi.setmodel (dropped, dropped->item->world_model);
 	dropped->solid = SOLID_TRIGGER;
-	dropped->movetype = MOVETYPE_TOSS;  
+	dropped->movetype = MOVETYPE_TOSS;
 	dropped->touch = drop_temp_touch;
 	dropped->owner = ent;
 
@@ -2046,7 +2083,7 @@ edict_t *Drop_Q1Backpack (edict_t *ent, gitem_t *item, int count)
 	VectorSet (backpack->maxs, 16, 16, 16);
 	gi.setmodel (backpack, "models/items/q1backpack/tris.md2");
 	backpack->solid = SOLID_TRIGGER;
-	backpack->movetype = MOVETYPE_TOSS;  
+	backpack->movetype = MOVETYPE_TOSS;
 	backpack->touch = drop_temp_touch;
 	backpack->owner = ent;
 
@@ -2126,7 +2163,7 @@ void droptofloor (edict_t *ent)
 	if (ent->spawnflags & ITEM_NO_DROPTOFLOOR)
 		ent->movetype = MOVETYPE_NONE;
 	else
-		ent->movetype = MOVETYPE_TOSS;  
+		ent->movetype = MOVETYPE_TOSS;
 	ent->touch = Touch_Item;
 
 	if (!(ent->spawnflags & ITEM_NO_DROPTOFLOOR))	// Knightmare- allow marked items to spawn in solids
@@ -2378,7 +2415,7 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 //ROGUE
 		if ( (int)dmflags->value & DF_NO_MINES )
 		{
-			if ( !strcmp(ent->classname, "ammo_prox") || 
+			if ( !strcmp(ent->classname, "ammo_prox") ||
 				 !strcmp(ent->classname, "ammo_tesla") )
 			{
 				G_FreeEdict (ent);
@@ -2424,8 +2461,8 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 //ROGUE
 //==========
 
-//PGM 
-	PrecacheItem (item);		
+//PGM
+	PrecacheItem (item);
 //PGM
 
 	if (coop->value && (strcmp(ent->classname, "key_power_cube") == 0))
@@ -2461,7 +2498,7 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 
 //======================================================================
 
-gitem_t	itemlist[] = 
+gitem_t	itemlist[] =
 {
 	{NULL},	// leave index 0 alone
 
@@ -2473,7 +2510,7 @@ gitem_t	itemlist[] =
 /*QUAKED item_armor_body (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_armor_body", 
+		"item_armor_body",
 		Pickup_Armor,
 		NULL,
 		NULL,
@@ -2497,7 +2534,7 @@ gitem_t	itemlist[] =
 /*QUAKED item_armor_combat (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_armor_combat", 
+		"item_armor_combat",
 		Pickup_Armor,
 		NULL,
 		NULL,
@@ -2521,7 +2558,7 @@ gitem_t	itemlist[] =
 /*QUAKED item_armor_jacket (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_armor_jacket", 
+		"item_armor_jacket",
 		Pickup_Armor,
 		NULL,
 		NULL,
@@ -2545,7 +2582,7 @@ gitem_t	itemlist[] =
 /*QUAKED item_armor_shard (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_armor_shard", 
+		"item_armor_shard",
 		Pickup_Armor,
 		NULL,
 		NULL,
@@ -2574,7 +2611,7 @@ gitem_t	itemlist[] =
 /*QUAKED item_armor_shard_flat (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_armor_shard_flat", 
+		"item_armor_shard_flat",
 		Pickup_Armor,
 		NULL,
 		NULL,
@@ -2602,7 +2639,7 @@ gitem_t	itemlist[] =
 /*QUAKED item_power_screen (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_power_screen", 
+		"item_power_screen",
 		Pickup_PowerArmor,
 		Use_PowerArmor,
 		Drop_PowerArmor,
@@ -2647,7 +2684,7 @@ gitem_t	itemlist[] =
 	},
 
 	//
-	// WEAPONS 
+	// WEAPONS
 	//
 // 8
 /*QUAKED weapon_flaregun (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -2677,7 +2714,7 @@ gitem_t	itemlist[] =
 /* weapon_blaster (.3 .3 1) (-16 -16 -16) (16 16 16)
 */
 	{
-		"weapon_blaster", 
+		"weapon_blaster",
 		Pickup_Weapon, //was NULL
 		Use_Weapon,
 		Drop_Weapon, //was NULL
@@ -2701,7 +2738,7 @@ gitem_t	itemlist[] =
 /*QUAKED weapon_shotgun (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"weapon_shotgun", 
+		"weapon_shotgun",
 		Pickup_Weapon,
 		Use_Weapon,
 		Drop_Weapon,
@@ -2725,7 +2762,7 @@ gitem_t	itemlist[] =
 /*QUAKED weapon_supershotgun (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"weapon_supershotgun", 
+		"weapon_supershotgun",
 		Pickup_Weapon,
 		Use_Weapon,
 		Drop_Weapon,
@@ -2749,7 +2786,7 @@ gitem_t	itemlist[] =
 /*QUAKED weapon_machinegun (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"weapon_machinegun", 
+		"weapon_machinegun",
 		Pickup_Weapon,
 		Use_Weapon,
 		Drop_Weapon,
@@ -2773,7 +2810,7 @@ gitem_t	itemlist[] =
 /*QUAKED weapon_chaingun (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"weapon_chaingun", 
+		"weapon_chaingun",
 		Pickup_Weapon,
 		Use_Weapon,
 		Drop_Weapon,
@@ -2807,10 +2844,10 @@ gitem_t	itemlist[] =
 		"models/weapons/g_etf_rifle/tris.md2", 0, EF_ROTATE,// world model, skinnum, world model flags
 		"models/weapons/v_etf_rifle/tris.md2",				// view model
 		"w_etf_rifle",										// icon
-		"ETF Rifle",										// name printed when picked up 
+		"ETF Rifle",										// name printed when picked up
 		0,													// number of digits for statusbar
 		1,													// amount used / contained
-		"Flechettes",										// ammo type used 
+		"Flechettes",										// ammo type used
 		IT_WEAPON|IT_STAY_COOP|IT_ROGUE,					// inventory flags
 		WEAP_ETFRIFLE,										// visible weapon
 		NULL,												// info (void *)
@@ -2947,7 +2984,7 @@ gitem_t	itemlist[] =
 /*QUAKED weapon_hyperblaster (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"weapon_hyperblaster", 
+		"weapon_hyperblaster",
 		Pickup_Weapon,
 		Use_Weapon,
 		Drop_Weapon,
@@ -2970,7 +3007,7 @@ gitem_t	itemlist[] =
 // 21
 // ROGUE
 /*QUAKED weapon_plasmabeam (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
-*/ 
+*/
 	{
 		"weapon_plasmabeam",								// classname
 		Pickup_Weapon,										// pickup function
@@ -2981,10 +3018,10 @@ gitem_t	itemlist[] =
 		"models/weapons/g_beamer/tris.md2", 0, EF_ROTATE,	// world model, skinnum, world model flags
 		"models/weapons/v_beamer/tris.md2",					// view model
 		"w_heatbeam",											// icon
-		"Plasma Beam",											// name printed when picked up 
+		"Plasma Beam",											// name printed when picked up
 		0,													// number of digits for statusbar
 		2,													// amount used / contained- if this changes, change it in NoAmmoWeaponChange as well
-		"Cells",											// ammo type used 
+		"Cells",											// ammo type used
 		IT_WEAPON|IT_STAY_COOP|IT_ROGUE,					// inventory flags
 		WEAP_PLASMA,										// visible weapon
 		NULL,												// info (void *)
@@ -3049,7 +3086,7 @@ gitem_t	itemlist[] =
 /*QUAKED weapon_railgun (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"weapon_railgun", 
+		"weapon_railgun",
 		Pickup_Weapon,
 		Use_Weapon,
 		Drop_Weapon,
@@ -3135,10 +3172,10 @@ gitem_t	itemlist[] =
 		"models/weapons/g_dist/tris.md2", 0, EF_ROTATE,	// world model, skinnum, world model flags
 		"models/weapons/v_dist/tris.md2",				// view model
 		"w_disintegrator",								// icon
-		"Disintegrator",								// name printed when picked up 
+		"Disintegrator",								// name printed when picked up
 		0,												// number of digits for statusbar
 		1,												// amount used / contained
-		"Disruptors",									// ammo type used 
+		"Disruptors",									// ammo type used
 		IT_WEAPON|IT_STAY_COOP|IT_ROGUE,				// inventory flags
 		WEAP_DISRUPTOR,									// visible weapon
 		NULL,											// info (void *)
@@ -3159,10 +3196,10 @@ gitem_t	itemlist[] =
 		"models/weapons/g_chainf/tris.md2", 0, EF_ROTATE,	// world model, world model flags
 		"models/weapons/v_chainf/tris.md2",					// view model
 		"w_chainfist",										// icon
-		"Chainfist",										// name printed when picked up 
+		"Chainfist",										// name printed when picked up
 		0,													// number of digits for statusbar
 		0,													// amount used / contained
-		NULL,												// ammo type used 
+		NULL,												// ammo type used
 		IT_WEAPON|IT_STAY_COOP|IT_MELEE|IT_ROGUE,			// inventory flags
 		WEAP_CHAINFIST,										// visible weapon
 		NULL,												// info (void *)
@@ -3174,7 +3211,7 @@ gitem_t	itemlist[] =
 /*QUAKED weapon_shockwave (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"weapon_shockwave", 
+		"weapon_shockwave",
 		Pickup_Weapon,
 		Use_Weapon,
 		Drop_Weapon,
@@ -3182,7 +3219,7 @@ gitem_t	itemlist[] =
 		"misc/w_pkup.wav",
 		"models/weapons/g_chain/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_chain/tris.md2",
-		"w_chaingun", // icon 
+		"w_chaingun", // icon
 		"Shockwave", // pickup
 		0,
 		1,
@@ -3452,7 +3489,7 @@ gitem_t	itemlist[] =
 		"models/ammo/am_disr/tris.md2", 0, 0,	// world model, world model flags
 		NULL,									// view model
 		"a_disruptor",							// icon
-		"Disruptors",							// pickup 
+		"Disruptors",							// pickup
 		3,  									// number of digits for status bar
 		15, 									// amount contained
 		NULL,									// ammo type used
@@ -3522,8 +3559,8 @@ gitem_t	itemlist[] =
 		"misc/am_pkup.wav",
 		"models/items/ammo/flares/tris.md2", 0, 0,
 		NULL,
-		"a_flares", // icon 
-		"Flares", // pickup 
+		"a_flares", // icon
+		"Flares", // pickup
 		3, // width
 		3,
 		NULL,
@@ -3595,12 +3632,12 @@ gitem_t	itemlist[] =
 		"misc/am_pkup.wav",
 		"models/weapons/g_nuke/tris.md2", 0, EF_ROTATE,
 		NULL,
-		"p_nuke",  // icon 
-		"A-M Bomb",  // pickup 
-		3,  // width 
-		1, // quantity 
+		"p_nuke",  // icon
+		"A-M Bomb",  // pickup
+		3,  // width
+		1, // quantity
 		"A-M Bomb",
-		IT_POWERUP|IT_ROGUE,	
+		IT_POWERUP|IT_ROGUE,
 		0,
 		NULL,
 		0,
@@ -3619,16 +3656,16 @@ gitem_t	itemlist[] =
 		"misc/am_pkup.wav",
 		"models/items/ammo/nbomb/tris.md2", 0, 0,
 		NULL,
-		"w_nbomb", // icon 
+		"w_nbomb", // icon
 #ifdef CITADELMOD_FEATURES
-		"CBU-71", // pickup 
+		"CBU-71", // pickup
 #else
-		"BLU-86", // pickup 
+		"BLU-86", // pickup
 #endif
-		3, // width 
+		3, // width
 		1, // quantity
 		"BLU-86",
-		IT_POWERUP,	
+		IT_POWERUP,
 		0,
 		NULL,
 		0,
@@ -3647,8 +3684,8 @@ gitem_t	itemlist[] =
 		"misc/am_pkup.wav",
 		"models/weapons/g_enuke/tris.md2", 0, EF_ROTATE,
 		"models/weapons/v_enuke/tris.md2",
-		"w_enuke", // icon 
-		"EMPNuke", // pickup 
+		"w_enuke", // icon
+		"EMPNuke", // pickup
 		3, // width
 		1,
 		"EMPNuke",
@@ -3672,8 +3709,8 @@ model="models/items/ammo/fuel/medium/"
 		"misc/am_pkup.wav",
 		"models/items/ammo/fuel/medium/tris.md2", 0, 0,
 		NULL,
-		"a_fuel", // icon 
-		"Fuel", // pickup 
+		"a_fuel", // icon
+		"Fuel", // pickup
 		4, // width
 		500, // quantity
 		NULL,
@@ -3692,7 +3729,7 @@ model="models/items/ammo/fuel/medium/"
 /*QUAKED item_quad (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_quad", 
+		"item_quad",
 		Pickup_Powerup,
 		Use_Quad,
 		Drop_General,
@@ -3716,7 +3753,7 @@ model="models/items/ammo/fuel/medium/"
 /*QUAKED item_double (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_double", 
+		"item_double",
 		Pickup_Powerup,
 		Use_Double,
 		Drop_General,
@@ -3740,7 +3777,7 @@ model="models/items/ammo/fuel/medium/"
 /*QUAKED item_quadfire (.3 .3 1) (-16 -16 -16) (16 16 16)
 */
 	{
-		"item_quadfire", 
+		"item_quadfire",
 		Pickup_Powerup,
 		Use_QuadFire,
 		Drop_General,
@@ -4091,7 +4128,7 @@ model="models/items/jet/"
 */
 /*
 	{
-		"item_torch", 
+		"item_torch",
 		Pickup_Powerup,
 		Use_Torch,
 		Drop_General,
@@ -4115,7 +4152,7 @@ model="models/items/jet/"
 /*QUAKED item_flashlight (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_flashlight", 
+		"item_flashlight",
 		Pickup_Powerup,
 		Use_Flashlight,
 		Drop_General,
@@ -4139,7 +4176,7 @@ model="models/items/jet/"
 /*QUAKED item_compass (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_compass", 
+		"item_compass",
 		Pickup_Powerup,
 		Use_Compass,
 		NULL,
@@ -4163,7 +4200,7 @@ model="models/items/jet/"
 /*QUAKED item_sphere_vengeance (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_sphere_vengeance", 
+		"item_sphere_vengeance",
 		Pickup_Sphere,
 		Use_Vengeance,
 		NULL,
@@ -4187,7 +4224,7 @@ model="models/items/jet/"
 /*QUAKED item_sphere_hunter (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_sphere_hunter", 
+		"item_sphere_hunter",
 		Pickup_Sphere,
 		Use_Hunter,
 		NULL,
@@ -4211,7 +4248,7 @@ model="models/items/jet/"
 /*QUAKED item_sphere_defender (.3 .3 1) (-16 -16 -16) (16 16 16) TRIGGER_SPAWN
 */
 	{
-		"item_sphere_defender", 
+		"item_sphere_defender",
 		Pickup_Sphere,
 		Use_Defender,
 		NULL,
@@ -4244,10 +4281,10 @@ model="models/items/jet/"
 		"models/items/dopple/tris.md2",	0, EF_ROTATE,		// world model, skinnum, world model flags
 		NULL,												// view model
 		"p_doppleganger",									// icon
-		"Doppleganger",										// name printed when picked up 
+		"Doppleganger",										// name printed when picked up
 		0,													// number of digits for statusbar
 		90,													// respawn time
-		NULL,												// ammo type used 
+		NULL,												// ammo type used
 		IT_POWERUP|IT_ROGUE,								// inventory flags
 		0,
 		NULL,												// info (void *)
@@ -4291,10 +4328,10 @@ model="models/items/jet/"
 		"models/items/tagtoken/tris.md2", 0, EF_ROTATE | EF_TAGTRAIL,	// world model, skinnum, world model flags
 		NULL,												// view model
 		"i_tagtoken",										// icon
-		"Tag Token",										// name printed when picked up 
+		"Tag Token",										// name printed when picked up
 		0,													// number of digits for statusbar
 		0,													// amount used / contained
-		NULL,												// ammo type used 
+		NULL,												// ammo type used
 		IT_POWERUP|IT_NOT_GIVEABLE|IT_ROGUE,				// inventory flags
 		0,
 		NULL,												// info (void *)
@@ -4600,10 +4637,10 @@ marker for airstrike
 		"models/weapons/g_nuke/tris.md2", 0, EF_ROTATE,		// world model, skinnum, world model flags
 		NULL,												// view model
 		"i_contain",										// icon
-		"Antimatter Pod",									// name printed when picked up 
+		"Antimatter Pod",									// name printed when picked up
 		2,													// number of digits for statusbar
 		0,													// respawn time
-		NULL,												// ammo type used 
+		NULL,												// ammo type used
 		IT_STAY_COOP|IT_KEY|IT_ROGUE,						// inventory flags
 		0,
 		NULL,												// info (void *)
@@ -4624,10 +4661,10 @@ marker for airstrike
 		"models/weapons/g_nuke/tris.md2", 0, EF_ROTATE,		// world model, skinnum, world model flags
 		NULL,												// view model
 		"i_nuke",											// icon
-		"Antimatter Bomb",									// name printed when picked up 
+		"Antimatter Bomb",									// name printed when picked up
 		2,													// number of digits for statusbar
 		0,													// respawn time
-		NULL,												// ammo type used 
+		NULL,												// ammo type used
 		IT_STAY_COOP|IT_KEY|IT_ROGUE,						// inventory flags
 		0,
 		NULL,												// info (void *)
@@ -4824,7 +4861,7 @@ model="models/items/q1keys/gold/tris.md2"
 		"q1misc/medkey.wav",
 		"models/items/q1keys/gold/tris.md2", 0, EF_ROTATE,
 		NULL,
-		"k_med_gold",						
+		"k_med_gold",
 		"Gold Key",
 		2,
 		0,
@@ -4850,7 +4887,7 @@ model="models/items/q1keys/silver/tris.md2"
 		"q1misc/medkey.wav",
 		"models/items/q1keys/silver/tris.md2", 0, EF_ROTATE,
 		NULL,
-		"k_med_silver",								
+		"k_med_silver",
 		"Silver Key",
 		2,
 		0,
@@ -4876,7 +4913,7 @@ model="models/items/q1keys/gold/rune/tris.md2"
 		"q1misc/runekey.wav",
 		"models/items/q1keys/gold/rune/tris.md2", 0, EF_ROTATE,
 		NULL,
-		"k_rune_gold",						
+		"k_rune_gold",
 		"Gold Rune Key",
 		2,
 		0,
@@ -4902,7 +4939,7 @@ model="models/items/q1keys/silver/rune/tris.md2"
 		"q1misc/runekey.wav",
 		"models/items/q1keys/silver/rune/tris.md2", 0, EF_ROTATE,
 		NULL,
-		"k_rune_silver",						
+		"k_rune_silver",
 		"Silver Rune Key",
 		2,
 		0,
@@ -4928,7 +4965,7 @@ model="models/items/q1keys/gold/base/tris.md2"
 		"q1misc/basekey.wav",
 		"models/items/q1keys/gold/base/tris.md2", 0, EF_ROTATE,
 		NULL,
-		"k_base_gold",						
+		"k_base_gold",
 		"Gold Keycard",
 		2,
 		0,
@@ -4954,7 +4991,7 @@ model="models/items/q1keys/silver/base/tris.md2"
 		"q1misc/basekey.wav",
 		"models/items/q1keys/silver/base/tris.md2", 0, EF_ROTATE,
 		NULL,
-		"k_base_silver",						
+		"k_base_silver",
 		"Silver Keycard",
 		2,
 		0,
@@ -5181,7 +5218,7 @@ void Use_Jet ( edict_t *ent, gitem_t *item )
 		// Force frame. While using the jetpack ClientThink forces the frame to
 		// stand20 when it really SHOULD be jump2. This is fine, but if we leave
 		// it at that then the player cycles through the wrong frames to complete
-		// his "jump" when the jetpack is turned off. The same thing is done in 
+		// his "jump" when the jetpack is turned off. The same thing is done in
 		// ClientThink when jetpack timer expires.
 		ent->s.frame = 67;
 		gi.sound(ent,CHAN_GIZMO,gi.soundindex("jetpack/shutdown.wav"), 1, ATTN_NORM, 0);
