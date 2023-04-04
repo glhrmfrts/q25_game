@@ -62,7 +62,7 @@ cvar_t	*allow_fog;			// Set to 0 for no fog
 
 // set to 0 to bypass target_changelevel clear inventory flag
 // because some user maps have this erroneously set
-cvar_t	*allow_clear_inventory; 
+cvar_t	*allow_clear_inventory;
 
 cvar_t	*bounce_bounce;
 cvar_t	*bounce_minv;
@@ -124,6 +124,9 @@ cvar_t	*huntercam;
 cvar_t	*strong_mines;
 cvar_t	*randomrespawn;
 //ROGUE
+
+//Q25 cvars
+cvar_t *skill_stage;
 
 void SpawnEntities (char *mapname, char *entities, char *spawnpoint);
 void ClientThink (edict_t *ent, usercmd_t *cmd);
@@ -329,7 +332,7 @@ void ClientEndServerFrames (void)
 				continue;
 			if (ent->moreflags & FL2_DO_NOT_REFLECT)	// Knightmare- don't reflect flagged entities
 				continue;
-			AddReflection(ent);	
+			AddReflection(ent);
 		}
 	}
 }

@@ -302,13 +302,13 @@ field_t fields[] = {
 //	{"duck", FOFS(monsterinfo.duck), F_MMOVE, FFL_NOSPAWN},
 //	{"unduck", FOFS(monsterinfo.unduck), F_MMOVE, FFL_NOSPAWN},
 //	{"sidestep", FOFS(monsterinfo.sidestep), F_MMOVE, FFL_NOSPAWN},
-	// ROGUE	
+	// ROGUE
 
 	// Zaero
 	{"model2", FOFS(model2), F_LSTRING},
 	{"model3", FOFS(model3), F_LSTRING},
 	{"model4", FOFS(model4), F_LSTRING},
-	
+
 	{"aspeed", FOFS(aspeed), F_FLOAT},
 	{"timeout", FOFS(timeout), F_FLOAT},
 	{"active", FOFS(active), F_INT},
@@ -321,7 +321,7 @@ field_t fields[] = {
 	{"zRaduisList", FOFS(zRaduisList), F_EDICT, FFL_NOSPAWN},
 	{"zSchoolChain", FOFS(zSchoolChain), F_EDICT, FFL_NOSPAWN},
 	{"zDistance", FOFS(zDistance), F_FLOAT},
-	
+
 	{"rideWith0", FOFS(rideWith[0]), F_EDICT, FFL_NOSPAWN},
 	{"rideWith1", FOFS(rideWith[1]), F_EDICT, FFL_NOSPAWN},
 	{"rideWithOffset0", FOFS(rideWithOffset[0]), F_VECTOR},
@@ -347,7 +347,7 @@ field_t fields[] = {
 field_t		levelfields[] =
 {
 	{"changemap", LLOFS(changemap), F_LSTRING},
-                   
+
 	{"sight_client", LLOFS(sight_client), F_EDICT},
 	{"sight_entity", LLOFS(sight_entity), F_EDICT},
 	{"sound_entity", LLOFS(sound_entity), F_EDICT},
@@ -424,6 +424,10 @@ void InitGame (void)
 	strong_mines = gi.cvar ("strong_mines", "0", 0);
 	randomrespawn = gi.cvar ("randomrespawn", "0", 0);
 //ROGUE
+
+//Q25
+	skill_stage = gi.cvar("skill_stage", "0", CVAR_LATCH);
+//Q25
 
 	// noset vars
 	dedicated = gi.cvar ("dedicated", "0", CVAR_NOSET);
@@ -956,7 +960,7 @@ void WriteClient (FILE *f, gclient_t *client)
 {
 	field_t		*field;
 	gclient_t	temp;
-	
+
 	// all of the ints, floats, and vectors stay as they are
 	temp = *client;
 
@@ -1367,7 +1371,7 @@ void ReadLevel (char *filename)
 	fread (&base, sizeof(base), 1, f);
 
 /*	Lazarus: The __DATE__ check in ReadGame is sufficient for a version
-	         check. The following is reported to fail under some 
+	         check. The following is reported to fail under some
 	         circumstances (though I've never seen it).
 
 #ifdef _WIN32

@@ -126,7 +126,7 @@
 #define FL_ROBOT				0x02000000	// Player-controlled robot or monster. Relax yaw constraints
 #define FL_REFLECT              0x04000000	// Reflection entity
 
-#define FL_Q1_MONSTER			0x08000000	
+#define FL_Q1_MONSTER			0x08000000
 
 #define FL_RESPAWN				0x80000000	// used for item respawning
 
@@ -134,7 +134,7 @@
 #define	FL2_TURRET_DOUBLE		0x00000001	// this is a double-barreled turret
 #define	FL2_TURRET_DOUBLE_ALT	0x00000002	// this turret alternates firing its barrels (style is set)
 #define	FL2_TURRET_DOUBLE_ALT_FIRING	0x00000004	// secondary barrel in use for alternate firing
-#define FL2_CRUCIFIED			0x00000008	// insane is crucified 
+#define FL2_CRUCIFIED			0x00000008	// insane is crucified
 #define FL2_COMMANDER			0x00000008	// Medic Commander / Daedalus internal flag
 #define FL2_WEAPON_ALT			0x00000010	// plasma guard has spread mode
 #define FL2_DO_NOT_REFLECT		0x00000020	// do not reflect this entity
@@ -160,9 +160,9 @@ typedef enum
 	DAMAGE_IMMORTAL		// similar to DAMAGE_YES, but health is not deducted
 } damage_t;
 
-typedef enum 
+typedef enum
 {
-	WEAPON_READY, 
+	WEAPON_READY,
 	WEAPON_ACTIVATING,
 	WEAPON_DROPPING,
 	WEAPON_FIRING
@@ -237,7 +237,7 @@ typedef enum
 #define AI_CHARGING				0x00040000
 #define AI_HINT_PATH			0x00080000	// Lazarus keep
 #define	AI_IGNORE_SHOTS			0x00100000
-#define	AI_BLOCKED				0x00200000	// used by blocked_checkattack: set to say I'm attacking while blocked 
+#define	AI_BLOCKED				0x00200000	// used by blocked_checkattack: set to say I'm attacking while blocked
 											// (prevents run-attacks)
 // Lazarus:
 #define AI_ACTOR                0x00400000  // Is this a misc_actor?
@@ -392,15 +392,15 @@ typedef struct
 #define IT_Q1				0x00002000	// added for Q1 keys
 
 // gitem_t->weapmodel for weapons indicates model index
-#define WEAP_BLASTER			1 
-#define WEAP_SHOTGUN			2 
-#define WEAP_SUPERSHOTGUN		3 
-#define WEAP_MACHINEGUN			4 
-#define WEAP_CHAINGUN			5 
-#define WEAP_GRENADES			6 
-#define WEAP_GRENADELAUNCHER	7 
-#define WEAP_ROCKETLAUNCHER		8 
-#define WEAP_HYPERBLASTER		9 
+#define WEAP_BLASTER			1
+#define WEAP_SHOTGUN			2
+#define WEAP_SUPERSHOTGUN		3
+#define WEAP_MACHINEGUN			4
+#define WEAP_CHAINGUN			5
+#define WEAP_GRENADES			6
+#define WEAP_GRENADELAUNCHER	7
+#define WEAP_ROCKETLAUNCHER		8
+#define WEAP_HYPERBLASTER		9
 #define WEAP_RAILGUN			10
 #define WEAP_BFG				11
 
@@ -1036,7 +1036,7 @@ extern  cvar_t	*allow_fog;       // Set to 0 for no fog
 
 // set to 0 to bypass target_changelevel clear inventory flag
 // because some user maps have this erroneously set
-extern  cvar_t	*allow_clear_inventory; 
+extern  cvar_t	*allow_clear_inventory;
 
 extern	cvar_t	*bounce_bounce;
 extern	cvar_t	*bounce_minv;
@@ -1086,6 +1086,9 @@ extern	cvar_t	*vid_ref;
 extern	cvar_t	*zoomrate;
 extern	cvar_t	*zoomsnap;
 
+// Q25 UNIT
+extern	cvar_t *skill_stage;
+
 extern	int		max_modelindex;
 extern	int		max_soundindex;
 
@@ -1116,7 +1119,7 @@ extern	int		max_soundindex;
 #define FFL_NOSPAWN			2
 
 typedef enum {
-	F_INT, 
+	F_INT,
 	F_FLOAT,
 	F_LSTRING,			// string on disk, pointer in memory, TAG_LEVEL
 	F_GSTRING,			// string on disk, pointer in memory, TAG_GAME
@@ -1417,7 +1420,7 @@ void M_FlyCheck (edict_t *self);
 void M_CheckGround (edict_t *ent);
 
 // ROGUE
-void stationarymonster_start (edict_t *self);	
+void stationarymonster_start (edict_t *self);
 void monster_done_dodge (edict_t *self);
 // ROGUE
 
@@ -1535,7 +1538,7 @@ void fire_plasma_rifle (edict_t *ent, vec3_t start, vec3_t dir, int damage, int 
 // g_weapon_km.c
 //
 void fire_shock_sphere (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage);
-void fire_nbomb (edict_t *self, vec3_t start, vec3_t aimdir, int speed);		
+void fire_nbomb (edict_t *self, vec3_t start, vec3_t aimdir, int speed);
 
 //
 // g_weapon_q1.c
@@ -1770,10 +1773,10 @@ void kick_attack (edict_t *ent);
 //extern float nuke_framenum;
 void fire_flechette (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage);
 edict_t *CheckForProxField (edict_t *ent);
-//void fire_prox (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed);	
+//void fire_prox (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed);
 void fire_prox (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int damage_multiplier, int speed, int health, float timer, float damage_radius);
 void Cmd_DetProx_f (edict_t *ent);
-void fire_nuke (edict_t *self, vec3_t start, vec3_t aimdir, int speed);		
+void fire_nuke (edict_t *self, vec3_t start, vec3_t aimdir, int speed);
 void fire_flame (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed);
 void fire_burst (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed);
 void fire_maintain (edict_t *, edict_t *, vec3_t start, vec3_t aimdir, int damage, int speed);
@@ -2153,7 +2156,7 @@ struct gclient_s
 	int			machinegun_shots;	// for weapon raising
 
 	qboolean    backpedaling;  //<- CDawg added this
-	
+
 	// animation vars
 	int			anim_end;
 	int			anim_priority;
@@ -2203,16 +2206,16 @@ struct gclient_s
 	// Mappack - set when the client is a camera. Change this to a flag
 	qboolean		incamera;
 	//=====================================================
-	// Chasecam	
+	// Chasecam
 	//=====================================================
 	int             chasetoggle; //whether chasecam is toggled on
 	int				chaseactive; //whether chasecam is active
-	edict_t         *chasecam;	//from Generations source	
+	edict_t         *chasecam;	//from Generations source
 	edict_t         *oldplayer;
 
 	//=====================================================
 	// Misc Timing Vars
-	//=====================================================	
+	//=====================================================
 
 	float			oldweapon;				//Lightning gun, Chainsaw etc
 	float			maxvelocity;
@@ -2378,7 +2381,7 @@ struct edict_s
 
 	// FIXME: move these fields to a server private sv_entity_t
 	link_t		area;				// linked to a division node or leaf
-	
+
 	int			num_clusters;		// if -1, use headnode instead
 	int			clusternums[MAX_ENT_CLUSTERS];
 	int			headnode;			// unused if num_clusters != -1
@@ -2406,7 +2409,7 @@ struct edict_s
 
 	char		*model;
 	float		freetime;			// sv.time when the object was freed
-	
+
 	//
 	// only used locally in game, not by server
 	//
@@ -2533,7 +2536,7 @@ struct edict_s
 
 	char		*musictrack;	// Knightmare- for specifying OGG or CD track
 
-	// selected brush models will move their origin to 
+	// selected brush models will move their origin to
 	// the origin of this entity:
 	char		*move_to;
 
@@ -2554,7 +2557,7 @@ struct edict_s
 
 	int			powerarmor;
 	int			powerarmortype;
-	
+
 	int			owner_id;					// These are used ONLY for ents that
 	int			id;							// change maps via trigger_transition
 	int			last_attacked_framenum;		// Used to turn off chicken mode
@@ -2614,7 +2617,7 @@ struct edict_s
 
 	edict_t		*mynoise;		// can go in client only
 	edict_t		*mynoise2;
-	
+
 	int			noise_index;
 	int			noise_index2;
 	float		volume;
@@ -2663,7 +2666,7 @@ struct edict_s
 //=====================================================
 //	Chasecam variables - from Generations source
 //=====================================================
-	int         chasedist1;   
+	int         chasedist1;
 	int         chasedist2;
     edict_t		*crosshair;
 	// end tpp
@@ -2725,7 +2728,7 @@ struct edict_s
 	char		*model2;
 	char		*model3;
 	char		*model4;
-	
+
 	float		aspeed;
 
 	// can use this for misc. timeouts
@@ -2736,11 +2739,11 @@ struct edict_s
 	// for func_door, also used by monster_autocannon, and misc_securitycamera
 	int			active;
 	int			seq;
-	
+
 	// between level saves/loads
 	int			spawnflags2;
 	int			oldentnum;
-	
+
 	// titan laser
 	edict_t		*laser;
 
@@ -2756,7 +2759,7 @@ struct edict_s
 
 	// camera number
 	vec3_t		mangle;
-	
+
 	// time left for the visor (stored if a visor is dropped)
 	int			visorFrames;
 

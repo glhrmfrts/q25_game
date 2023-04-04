@@ -1665,7 +1665,7 @@ extern void ShockEffect ( edict_t * source , edict_t * attacker , float damage ,
 extern void shock_effect_center_think ( edict_t * self ) ;
 extern void shock_effect_think ( edict_t * self ) ;
 extern void ShockQuake ( edict_t * self ) ;
-extern void fire_bfg ( edict_t * self , vec3_t start , vec3_t dir , int damage , int speed , float damage_radius, qboolean homing ) ;
+extern void fire_bfg ( edict_t * self , vec3_t start , vec3_t dir , int damage , int speed , float damage_radius , qboolean homing ) ;
 extern void bfg_think ( edict_t * self ) ;
 extern void bfg_touch ( edict_t * self , edict_t * other , cplane_t * plane , csurface_t * surf ) ;
 extern void bfg_explode ( edict_t * self ) ;
@@ -2308,7 +2308,7 @@ extern void monster_fire_rocket_heat ( edict_t * self , vec3_t start , vec3_t di
 extern void monster_fire_phalanx ( edict_t * self , vec3_t start , vec3_t dir , int damage , int speed , float damage_radius , int radius_damage , int flashtype ) ;
 extern void monster_fire_ionripper ( edict_t * self , vec3_t start , vec3_t dir , int damage , int speed , int flashtype , int effect ) ;
 extern void monster_fire_blueblaster ( edict_t * self , vec3_t start , vec3_t dir , int damage , int speed , int flashtype , int effect ) ;
-extern void monster_fire_bfg ( edict_t * self , vec3_t start , vec3_t aimdir , int damage , int speed , int kick , float damage_radius , int flashtype, qboolean homing ) ;
+extern void monster_fire_bfg ( edict_t * self , vec3_t start , vec3_t aimdir , int damage , int speed , int kick , float damage_radius , int flashtype , qboolean homing ) ;
 extern void monster_fire_railgun ( edict_t * self , vec3_t start , vec3_t aimdir , int damage , int kick , int flashtype ) ;
 extern void monster_fire_missile ( edict_t * self , vec3_t start , vec3_t dir , int damage , int speed , int flashtype , edict_t * homing_target ) ;
 extern void monster_fire_rocket ( edict_t * self , vec3_t start , vec3_t dir , int damage , int speed , int flashtype , edict_t * homing_target ) ;
