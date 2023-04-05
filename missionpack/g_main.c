@@ -105,7 +105,7 @@ cvar_t	*rotate_distance;
 cvar_t	*s_primary;
 cvar_t	*shift_distance;
 cvar_t	*sv_maxgibs;
-cvar_t	*turn_rider;
+//cvar_t	*turn_rider;
 cvar_t	*vid_ref;
 cvar_t	*zoomrate;
 cvar_t	*zoomsnap;
@@ -207,7 +207,7 @@ Returns a pointer to the structure with all entry points
 and global variables
 =================
 */
-game_export_t *GetGameAPI (game_import_t *import)
+GAMEAPI_EXPORT game_export_t *GetGameAPI (game_import_t *import)
 {
 	gi = *import;
 

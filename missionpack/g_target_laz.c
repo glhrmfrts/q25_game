@@ -3066,7 +3066,7 @@ void target_locator_init (edict_t *self)
 	int num_points=0;
 	int i, N, nummoves;
 	qboolean looped;
-	edict_t *tgt0, *tgtlast, *target, *next;
+	edict_t *tgt0, *tgtlast=NULL, *target, *next;
 	edict_t *move;
 
 	move = NULL;

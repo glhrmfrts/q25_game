@@ -1,6 +1,28 @@
 
 // game.h -- game dll information visible to server
 
+// Nephatrine: defined these as `;` instead of empty because that damnable
+//             extractfunctions parser chokes otherwise
+#ifndef GAME_HARD_LINKED
+#	if defined( _WIN32 ) || defined( __CYGWIN__ )
+#		define GAMEAPI_EXPORT __declspec( dllexport )
+#	elif defined( __GNUC__ ) || defined( __clang__ )
+#		define GAMEAPI_EXPORT __attribute__( ( visibility( "default" ) ) )
+#	else
+#		define GAMEAPI_EXPORT ;
+#	endif
+#	ifdef GAME_EXPORTS
+#		define GAMEAPI_IMPORT GAMEAPI_EXPORT
+#	elif defined( _WIN32 ) || defined( __CYGWIN__ )
+#		define GAMEAPI_IMPORT __declspec( dllimport )
+#	else
+#		define GAMEAPI_IMPORT ;
+#	endif
+#else
+#	define GAMEAPI_EXPORT ;
+#	define GAMEAPI_IMPORT ;
+#endif
+
 #define	GAME_API_VERSION	3
 
 // edict->svflags
@@ -262,4 +284,4 @@ typedef struct
 	int			max_edicts;
 } game_export_t;
 
-game_export_t *GetGameApi (game_import_t *import);
+GAMEAPI_IMPORT game_export_t *GetGameAPI (game_import_t *import);

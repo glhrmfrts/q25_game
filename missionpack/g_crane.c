@@ -520,7 +520,7 @@ void Crane_Move_Begin (edict_t *ent)
 void G_FindCraneParts()
 {
 	vec3_t  dist;
-	edict_t *cable;
+	edict_t *cable = NULL;
 	edict_t *control;
 	edict_t *beam;
 	edict_t *hoist;

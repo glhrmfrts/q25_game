@@ -1578,15 +1578,15 @@ void actor_salute (edict_t *actor);
 void actor_stand (edict_t *actor);
 void actor_walk (edict_t *actor);
 void actor_walk_back (edict_t *actor);
-mmove_t actor_move_crouch;
-mmove_t actor_move_crouchwalk;
-mmove_t actor_move_crouchwalk_back;
-mmove_t	actor_move_run;
-mmove_t	actor_move_run_back;
-mmove_t	actor_move_run_bad;
-mmove_t actor_move_stand;
-mmove_t actor_move_walk;
-mmove_t	actor_move_walk_back;
+extern mmove_t actor_move_crouch;
+extern mmove_t actor_move_crouchwalk;
+extern mmove_t actor_move_crouchwalk_back;
+extern mmove_t	actor_move_run;
+extern mmove_t	actor_move_run_back;
+extern mmove_t	actor_move_run_bad;
+extern mmove_t actor_move_stand;
+extern mmove_t actor_move_walk;
+extern mmove_t	actor_move_walk_back;
 
 //
 // m_medic.c
@@ -1655,30 +1655,6 @@ void Do_Text_Display(edict_t *activator, int flags, char *message);
 // p_weapon.c
 //
 void PlayerNoise(edict_t *who, vec3_t where, int type);
-
-//
-// m_actor.c
-//
-void actor_attack (edict_t *actor);
-void actor_files ();
-void actor_fire (edict_t *actor);
-void actor_jump (edict_t *actor);
-void actor_moveit (edict_t *player, edict_t *actor);
-void actor_run (edict_t *actor);
-void actor_run_back (edict_t *actor);
-void actor_salute (edict_t *actor);
-void actor_stand (edict_t *actor);
-void actor_walk (edict_t *actor);
-void actor_walk_back (edict_t *actor);
-mmove_t actor_move_crouch;
-mmove_t actor_move_crouchwalk;
-mmove_t actor_move_crouchwalk_back;
-mmove_t	actor_move_run;
-mmove_t	actor_move_run_back;
-mmove_t	actor_move_run_bad;
-mmove_t actor_move_stand;
-mmove_t actor_move_walk;
-mmove_t	actor_move_walk_back;
 
 //
 // m_medic.c

@@ -1128,7 +1128,8 @@ qboolean Pickup_Key (edict_t *ent, edict_t *other)
 		"key_data_spinner",
 		"key_airstrike_target"
 	};
-	for (int i = 0; i < sizeof(stageItems)/sizeof(stageItems[0]); i++)
+	int i;
+	for (i = 0; i < sizeof(stageItems)/sizeof(stageItems[0]); i++)
 	{
 		if (0 == strcmp(ent->classname, stageItems[i]))
 		{
@@ -5279,7 +5280,7 @@ void SP_xatrix_item (edict_t *self)
 {
 	gitem_t	*item;
 	int		i;
-	char	*spawnClass;
+	char	*spawnClass=NULL;
 
 	if (!self->classname)
 		return;
@@ -5309,7 +5310,7 @@ void SP_xatrix_item (edict_t *self)
 	// check item spawn functions
 	for (i=0,item=itemlist ; i<game.num_items ; i++,item++)
 	{
-		if (!item->classname)
+		if (!item->classname || !spawnClass)
 			continue;
 		if (!strcmp(item->classname, spawnClass))
 		{	// found it
