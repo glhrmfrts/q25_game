@@ -51,7 +51,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;GAME_EXPORTS"
 				MinimalRebuild="true"
 				RuntimeLibrary="1"
 				PrecompiledHeaderFile=".\debug/game.pch"
@@ -83,7 +83,6 @@
 				OutputFile=".\gamex86.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ModuleDefinitionFile=".\game.def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\debug/gamex86.pdb"
 				GenerateMapFile="true"
@@ -152,7 +151,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;GAME_EXPORTS"
 				MinimalRebuild="true"
 				RuntimeLibrary="1"
 				PrecompiledHeaderFile=".\x64\debug/game.pch"
@@ -185,7 +184,6 @@
 				OutputFile=".\kmq2gamex64.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ModuleDefinitionFile=".\game.def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\x64\debug/kmq2gamex64.pdb"
 				GenerateMapFile="true"
@@ -254,7 +252,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;GAME_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -286,7 +284,6 @@
 				OutputFile=".\gamex86.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ModuleDefinitionFile=".\game.def"
 				ProgramDatabaseFile=".\release/gamex86.pdb"
 				SubSystem="2"
 				LargeAddressAware="2"
@@ -353,7 +350,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;GAME_EXPORTS"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -385,7 +382,6 @@
 				OutputFile=".\kmq2gamex64.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				ModuleDefinitionFile=".\game.def"
 				ProgramDatabaseFile=".\x64\release/kmq2gamex64.pdb"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -1167,10 +1163,6 @@
 			Name="Resource Files"
 			Filter="*.def,*.res"
 			>
-			<File
-				RelativePath="game.def"
-				>
-			</File>
 			<File
 				RelativePath=".\missionpack_2008.rc"
 				>
