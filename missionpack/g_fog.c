@@ -20,9 +20,15 @@
 
 #else	// old server-side fog
 
+#ifdef _WIN32
 #include <windows.h>
 #define __MSC__
-#include <gl/gl.h>
+#else
+#include <dlfcn.h>
+#define WINAPI APIENTRY
+#define GetProcAddress( h, s ) dlsym( h, s )
+#endif
+#include <GL/gl.h>
 
 #endif	// KMQUAKE2_ENGINE_MOD
 
@@ -44,7 +50,11 @@ int			last_fog_model, last_fog_density, last_fog_near, last_fog_far, last_fog_co
 
 #else	// old sever-side fog
 
+#ifdef _WIN32
 HMODULE		hOpenGL;
+#else
+void		*hOpenGL;
+#endif
 typedef void (WINAPI *GLCLEARCOLOR) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
 typedef void (WINAPI *GLDISABLE) (GLenum cap);
 typedef void (WINAPI *GLENABLE) (GLenum cap);
@@ -640,9 +650,15 @@ void Fog_Init (void)
 	if (gl_driver_fog && strlen(gl_driver_fog->string))
 		Com_strcpy (GL_Lib, sizeof(GL_Lib), gl_driver_fog->string);
 	else
+#ifdef _WIN32
 		Com_strcpy (GL_Lib,sizeof(GL_Lib),  "opengl32");
 	Com_strcat (GL_Lib, sizeof(GL_Lib), ".dll");
 	hOpenGL = LoadLibrary(GL_Lib);
+#else
+		Com_strcpy (GL_Lib,sizeof(GL_Lib),  "libGL");
+	Com_strcat (GL_Lib, sizeof(GL_Lib), ".so");
+	hOpenGL = dlopen( GL_Lib, RTLD_LAZY | RTLD_GLOBAL );
+#endif
 	if (hOpenGL)
 	{
 		GL_glClearColor = (GLCLEARCOLOR)GetProcAddress(hOpenGL,"glClearColor");
