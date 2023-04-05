@@ -332,7 +332,7 @@ Returns 1, 2, or 1 + 2
 //#if !id386 || defined __linux__ 
 //#ifndef id386
 //#ifndef _WIN32
-#if !defined (_WIN32) || !defined (_M_IX86)
+#if !defined (_WIN32) || !defined (_M_IX86) || defined(C_ONLY)
 int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 {
 	float	dist1, dist2;
