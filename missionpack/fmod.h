@@ -10,7 +10,9 @@
 //===============================================================================================
 
 #if defined(__GNUC__) && defined(WIN32)
+	#ifndef _cdecl
        #define _cdecl
+	#endif
 #endif /* defined(__GNUC__) && defined(WIN32) */
 
 #if defined(PLATFORM_LINUX)
