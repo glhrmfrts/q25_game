@@ -5279,7 +5279,7 @@ void SP_xatrix_item (edict_t *self)
 {
 	gitem_t	*item;
 	int		i;
-	char	*spawnClass;
+	char	*spawnClass=NULL;
 
 	if (!self->classname)
 		return;
@@ -5309,7 +5309,7 @@ void SP_xatrix_item (edict_t *self)
 	// check item spawn functions
 	for (i=0,item=itemlist ; i<game.num_items ; i++,item++)
 	{
-		if (!item->classname)
+		if (!item->classname || !spawnClass)
 			continue;
 		if (!strcmp(item->classname, spawnClass))
 		{	// found it

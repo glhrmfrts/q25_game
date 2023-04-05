@@ -1863,7 +1863,7 @@ int PatchMonsterModel (char *modelname)
 	FILE		*infile;
 	FILE		*outfile;
 	dmdl_t		model;				// model header
-	byte		*data;				// model data
+	byte		*data=NULL;				// model data
 	int			datasize;			// model data size (bytes)
 	int			newoffset;			// model data offset (after skins)
 	qboolean	is_tank = false;
