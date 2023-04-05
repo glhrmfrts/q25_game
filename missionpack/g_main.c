@@ -105,7 +105,7 @@ cvar_t	*rotate_distance;
 cvar_t	*s_primary;
 cvar_t	*shift_distance;
 cvar_t	*sv_maxgibs;
-cvar_t	*turn_rider;
+//cvar_t	*turn_rider;
 cvar_t	*vid_ref;
 cvar_t	*zoomrate;
 cvar_t	*zoomsnap;
