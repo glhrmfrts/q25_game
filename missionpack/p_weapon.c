@@ -715,6 +715,16 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 	int		n;
 	int		current_weapon_index = ITEM_INDEX(ent->client->pers.weapon);
 
+	const char* current_weapon_classname = ent->client->pers.weapon->classname;
+
+	const int is_ssg = (0 == strcmp(current_weapon_classname, "weapon_supershotgun")) ? 1 : 0;
+	const int is_mg = (0 == strcmp(current_weapon_classname, "weapon_machinegun")) ? 1 : 0;
+	const int is_chaingun = (0 == strcmp(current_weapon_classname, "weapon_chaingun")) ? 1 : 0;
+	const int is_rocket = (0 == strcmp(current_weapon_classname, "weapon_rocketlauncher")) ? 1 : 0;
+	const int is_hyper = (0 == strcmp(current_weapon_classname, "weapon_hyperblaster")) ? 1 : 0;
+
+	int can_change_while_firing;
+
 	// Knightmare- no weapon activity while controlling turret
 	if (ent->flags & FL_TURRET_OWNER)
 	{
@@ -745,13 +755,6 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 			gi.sound (ent, CHAN_AUTO, gi.soundindex("weapons/shockaway.wav"), 1.0, ATTN_NORM, 0);
 	}
 #endif
-
-	const char* current_weapon_classname = ent->client->pers.weapon->classname;
-	qboolean is_ssg = (0 == strcmp(current_weapon_classname, "weapon_supershotgun"));
-	qboolean is_mg = (0 == strcmp(current_weapon_classname, "weapon_machinegun"));
-	qboolean is_chaingun = (0 == strcmp(current_weapon_classname, "weapon_chaingun"));
-	qboolean is_rocket = (0 == strcmp(current_weapon_classname, "weapon_rocketlauncher"));
-	qboolean is_hyper = (0 == strcmp(current_weapon_classname, "weapon_hyperblaster"));
 
 	if (ent->client->weaponstate == WEAPON_DROPPING)
 	{
@@ -803,7 +806,8 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 		return;
 	}
 
-	qboolean can_change_while_firing = !((is_chaingun || is_hyper) && (ent->client->weaponstate == WEAPON_FIRING));
+	can_change_while_firing = ((is_chaingun || is_hyper) && (ent->client->weaponstate == WEAPON_FIRING)) ? 0 : 1;
+
 	if ((ent->client->newweapon) && can_change_while_firing)
 	{
 		ent->client->weaponstate = WEAPON_DROPPING;

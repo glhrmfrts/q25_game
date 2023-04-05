@@ -1128,7 +1128,8 @@ qboolean Pickup_Key (edict_t *ent, edict_t *other)
 		"key_data_spinner",
 		"key_airstrike_target"
 	};
-	for (int i = 0; i < sizeof(stageItems)/sizeof(stageItems[0]); i++)
+	int i;
+	for (i = 0; i < sizeof(stageItems)/sizeof(stageItems[0]); i++)
 	{
 		if (0 == strcmp(ent->classname, stageItems[i]))
 		{
