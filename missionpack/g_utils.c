@@ -2,6 +2,12 @@
 
 #include "./g_local.h"
 
+#ifndef _WIN32
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
 #define SF_PLAYBACK_3D	16
 
 void sentien_laser_off (edict_t *self); // Zaero add
@@ -1192,7 +1198,11 @@ void CreatePath (const char *path)
 		if (*ofs == '/' || *ofs == '\\')
 		{	// create the directory
 			*ofs = 0;
+#ifdef _WIN32
 			_mkdir (tmpBuf);
+#else
+			mkdir (tmpBuf, 0755);
+#endif
 			*ofs = '/';
 		}
 	}
