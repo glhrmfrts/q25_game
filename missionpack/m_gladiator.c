@@ -348,12 +348,6 @@ void gladiator_die(edict_t* self, edict_t* inflictor, edict_t* attacker, int dam
 {
 	int n;
 
-	// Put first to see if this solveth the LOOPIN' SOUNDS
-	if (self->deadflag == DEAD_DEAD)
-	{
-		return;
-	}
-	
 	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;
 
 	// check for gib
@@ -368,6 +362,9 @@ void gladiator_die(edict_t* self, edict_t* inflictor, edict_t* attacker, int dam
 		self->deadflag = DEAD_DEAD;
 		return;
 	}
+
+	if (self->deadflag == DEAD_DEAD)
+		return;
 
 	// regular death
 	if (strcmp(self->classname, "monster_bfgladiator") == 0) {
