@@ -686,6 +686,9 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 			{
 				message = "got an infusion of plasma from a";
 			}
+			// Disruptor Guard
+			else if (!strcmp(attacker->classname, "monster_soldier_dist"))
+				message = "got sucked into the singularity by a";
 			// Enforcer
 			else if (!strcmp(attacker->classname, "monster_infantry"))
 			{
@@ -725,7 +728,8 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				message = "was smashed by a";
 			// Gladiator/Beta Class Gladiator
 			else if (!strcmp(attacker->classname, "monster_gladiator")
-				|| !strcmp(attacker->classname, "monster_gladb"))
+				|| !strcmp(attacker->classname, "monster_gladb")
+				|| !strcmp(attacker->classname, "monster_bfgladiator"))
 			{
 				if (mod == MOD_RAILGUN)
 					message = "was railed by a";
@@ -736,6 +740,10 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				else if (mod == MOD_HIT) {
 					message = "was mangled by a";
 					message2 = "'s claw";
+				}
+				else
+				{
+					message = "was evaporated by a";
 				}
 			}
 			// Medic
