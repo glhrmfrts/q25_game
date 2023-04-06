@@ -1875,6 +1875,7 @@ int PatchMonsterModel (char *modelname)
 	qboolean	is_chick = false;
 	qboolean	is_gunner = false;
 	qboolean	is_soldierh = false;
+	qboolean	is_soldierq25 = false;
 	qboolean	is_carrier = false;
 	qboolean	is_hover = false;
 	qboolean	is_medic = false;
@@ -1947,6 +1948,11 @@ int PatchMonsterModel (char *modelname)
 	else if (!strcmp(modelname, "models/monsters/soldierh/tris.md2"))
 	{
 		is_soldierh = true;
+		numskins = 24;
+	}
+	else if (!strcmp(modelname, "models/monsters/soldrq25/tris.md2"))
+	{
+		is_soldierq25 = true;
 		numskins = 24;
 	}
 	else if (!strcmp(modelname, "models/monsters/carrier/tris.md2"))
@@ -2279,7 +2285,7 @@ int PatchMonsterModel (char *modelname)
 				Com_strcat (skins[j], sizeof(skins[j]), "custombeta_p3.pcx"); break;
 			}
 		}
-		else if (is_soldierh)
+		else if (is_soldierh || is_soldierq25)
 		{
 			switch (j)
 			{
