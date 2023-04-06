@@ -502,7 +502,7 @@ void SP_monster_bfgladiator(edict_t* self)
 	bfglad_sound_pain1 = gi.soundindex("bfgladiator/pain.wav");
 	bfglad_sound_pain2 = gi.soundindex("bfgladiator/pain2.wav");
 	bfglad_die = gi.soundindex("bfgladiator/glddeth2.wav");
-	bfglad_sound_gun = gi.soundindex("weapons/Bfg__f1y.wav");
+	bfglad_sound_gun = gi.soundindex("bfgladiator/glattack.wav");
 	bfglad_idle = gi.soundindex("bfgladiator/gldidle1.wav");
 	bfglad_sight = gi.soundindex("bfgladiator/sight.wav");
 
