@@ -4227,7 +4227,7 @@ void SP_monster_soldier_q25 (edict_t *self)
 	q25_sound_death = gi.soundindex ("soldrq25/deth3.wav");
 	q25_sound_idle =	gi.soundindex ("soldrq25/idle.wav");
 	q25_sound_sight1 =	gi.soundindex ("soldrq25/sight1.wav");
-	q25_sound_sight2 =	q25_sound_sight1;
+	q25_sound_sight2 =	gi.soundindex ("soldrq25/sight2.wav");
 	q25_sound_cock =	gi.soundindex ("infantry/infatck3.wav");
 
 	if (!self->mass)
