@@ -3418,9 +3418,9 @@ void SP_monster_soldier_h (edict_t *self)
 {
 	// Lazarus: special purpose skins
 	if ( self->style )
-		PatchMonsterModel("models/monsters/soldrq25/tris.md2");
+		PatchMonsterModel("models/monsters/soldierh/tris.md2");
 
-	self->s.modelindex = gi.modelindex ("models/monsters/soldrq25/tris.md2");
+	self->s.modelindex = gi.modelindex ("models/monsters/soldierh/tris.md2");
 	self->monsterinfo.scale = MODEL_SCALE;
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, 32);
