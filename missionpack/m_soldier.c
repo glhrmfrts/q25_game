@@ -3613,6 +3613,7 @@ void SP_monster_soldier_lasergun (edict_t *self)
 * NOTE(gnemeth): Guggenheim's disruptor soldier
 *
 */
+
 void soldierq25_idle (edict_t *self)
 {
 	if (!(self->spawnflags & SF_MONSTER_AMBUSH))
@@ -3624,12 +3625,13 @@ void soldierq25_idle (edict_t *self)
 
 void soldierq25_cock (edict_t *self)
 {
-	gi.dprintf ("IM COCK");
 	if (self->s.frame == FRAME_stand322)
 		gi.sound (self, CHAN_WEAPON, q25_sound_cock, 1, ATTN_IDLE, 0);
 	else
 		gi.sound (self, CHAN_WEAPON, q25_sound_cock, 1, ATTN_NORM, 0);
 }
+
+// STAND
 
 void soldierq25_stand (edict_t *self);
 
@@ -3725,6 +3727,91 @@ void soldierq25_stand (edict_t *self)
 		self->monsterinfo.currentmove = &soldierq25_move_stand3;
 }
 
+
+// RUN
+
+void soldierq25_run (edict_t *self);
+
+mmove_t soldierq25_move_start_run = {FRAME_run01, FRAME_run02, soldierh_frames_start_run, soldierq25_run};
+
+void soldierq25_run (edict_t *self)
+{
+	if (self->monsterinfo.aiflags & AI_STAND_GROUND)
+	{
+		self->monsterinfo.currentmove = &soldierq25_move_stand1;
+		return;
+	}
+
+	if (self->monsterinfo.currentmove == &soldierh_move_walk1 ||
+		self->monsterinfo.currentmove == &soldierh_move_walk2 ||
+		self->monsterinfo.currentmove == &soldierq25_move_start_run)
+	{
+		self->monsterinfo.currentmove = &soldierh_move_run;
+	}
+	else
+	{
+		self->monsterinfo.currentmove = &soldierq25_move_start_run;
+	}
+}
+
+// JUMP
+
+mmove_t soldierq25_move_jump = { FRAME_run01, FRAME_run08, soldierh_frames_jump, soldierq25_run };
+
+void soldierq25_jump (edict_t *self)
+{
+	self->monsterinfo.currentmove = &soldierq25_move_jump;
+}
+
+// PAIN
+
+mmove_t soldierq25_move_pain1 = {FRAME_pain101, FRAME_pain105, soldierh_frames_pain1, soldierq25_run};
+
+mmove_t soldierq25_move_pain2 = {FRAME_pain201, FRAME_pain207, soldierh_frames_pain2, soldierq25_run};
+
+mmove_t soldierq25_move_pain3 = {FRAME_pain301, FRAME_pain318, soldierh_frames_pain3, soldierq25_run};
+
+mmove_t soldierq25_move_pain4 = {FRAME_pain401, FRAME_pain417, soldierh_frames_pain4, soldierq25_run};
+
+void soldierq25_pain (edict_t *self, edict_t *other, float kick, int damage)
+{
+	float	r;
+
+	if (self->health < (self->max_health / 2))
+			self->s.skinnum |= 1;
+
+	if (level.time < self->pain_debounce_time)
+	{
+		if ((self->velocity[2] > 100) && ( (self->monsterinfo.currentmove == &soldierq25_move_pain1) || (self->monsterinfo.currentmove == &soldierq25_move_pain2) || (self->monsterinfo.currentmove == &soldierq25_move_pain3)))
+			self->monsterinfo.currentmove = &soldierq25_move_pain4;
+		return;
+	}
+
+	self->pain_debounce_time = level.time + 3;
+
+	gi.sound (self, CHAN_VOICE, q25_sound_pain, 1, ATTN_NORM, 0);
+
+	if (self->velocity[2] > 100)
+	{
+		self->monsterinfo.currentmove = &soldierq25_move_pain4;
+		return;
+	}
+
+	if (skill->value == 3)
+		return;		// no pain anims in nightmare
+
+	r = random();
+
+	if (r < 0.33)
+		self->monsterinfo.currentmove = &soldierq25_move_pain1;
+	else if (r < 0.66)
+		self->monsterinfo.currentmove = &soldierq25_move_pain2;
+	else
+		self->monsterinfo.currentmove = &soldierq25_move_pain3;
+}
+
+// ATTACK
+
 void soldierq25_fire (edict_t *self, int flash_number)
 {
 	vec3_t	start;
@@ -3796,89 +3883,7 @@ void soldierq25_fire (edict_t *self, int flash_number)
 	monster_fire_tracker(self, start, aim, 25, 500, NULL, MZ2_WIDOW_DISRUPTOR);
 }
 
-void soldierq25_pain (edict_t *self, edict_t *other, float kick, int damage)
-{
-	float	r;
-	int		n;
-
-	if (self->health < (self->max_health / 2))
-			self->s.skinnum |= 1;
-
-	if (level.time < self->pain_debounce_time)
-	{
-		if ((self->velocity[2] > 100) && ( (self->monsterinfo.currentmove == &soldierh_move_pain1) || (self->monsterinfo.currentmove == &soldierh_move_pain2) || (self->monsterinfo.currentmove == &soldierh_move_pain3)))
-			self->monsterinfo.currentmove = &soldierh_move_pain4;
-		return;
-	}
-
-	self->pain_debounce_time = level.time + 3;
-
-	gi.sound (self, CHAN_VOICE, q25_sound_pain, 1, ATTN_NORM, 0);
-
-	if (self->velocity[2] > 100)
-	{
-		self->monsterinfo.currentmove = &soldierh_move_pain4;
-		return;
-	}
-
-	if (skill->value == 3)
-		return;		// no pain anims in nightmare
-
-	r = random();
-
-	if (r < 0.33)
-		self->monsterinfo.currentmove = &soldierh_move_pain1;
-	else if (r < 0.66)
-		self->monsterinfo.currentmove = &soldierh_move_pain2;
-	else
-		self->monsterinfo.currentmove = &soldierh_move_pain3;
-}
-
-void soldierq25_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
-{
-	int		n;
-
-	// check for gib
-	if (self->health <= self->gib_health && !(self->spawnflags & SF_MONSTER_NOGIB))
-	{
-		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
-		for (n = 0; n < 3; n++)
-			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", 0, 0, damage, GIB_ORGANIC);
-		ThrowGib (self, "models/objects/gibs/chest/tris.md2", 0, 0, damage, GIB_ORGANIC);
-		ThrowHead (self, "models/objects/gibs/head2/tris.md2", 0, 0, damage, GIB_ORGANIC);
-		
-		self->deadflag = DEAD_DEAD;
-		return;
-	}
-
-	if (self->deadflag == DEAD_DEAD)
-		return;
-
-	self->s.skinnum |= 1;
-	self->deadflag = DEAD_DEAD;
-	self->takedamage = DAMAGE_YES;
-	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;
-
-	gi.sound (self, CHAN_VOICE, q25_sound_death, 1, ATTN_NORM, 0);
-
-	if (fabs((self->s.origin[2] + self->viewheight) - point[2]) <= 4)
-	{
-		self->monsterinfo.currentmove = &soldierh_move_death3;
-		return;
-	}
-
-	n = rand() % 5;
-	if (n == 0)
-		self->monsterinfo.currentmove = &soldierh_move_death1;
-	else if (n == 1)
-		self->monsterinfo.currentmove = &soldierh_move_death2;
-	else if (n == 2)
-		self->monsterinfo.currentmove = &soldierh_move_death4;
-	else if (n == 3)
-		self->monsterinfo.currentmove = &soldierh_move_death5;
-	else
-		self->monsterinfo.currentmove = &soldierh_move_death6;
-}
+// ATTACK1 (blaster/shotgun)
 
 void soldierq25_fire1 (edict_t *self)
 {
@@ -3903,7 +3908,7 @@ mframe_t soldierq25_frames_attack1 [] =
 	ai_charge, 0,  soldierq25_fire1,
 	ai_charge, 0,  NULL,
 	ai_charge, 0,  NULL,
-	ai_charge, 0,  soldierh_attack1_refire1,
+	ai_charge, 0,  soldierq25_attack1_refire1,
 	ai_charge, 0,  NULL,
 	ai_charge, 0,  soldierq25_cock,
 	ai_charge, 0,  NULL,
@@ -3911,7 +3916,9 @@ mframe_t soldierq25_frames_attack1 [] =
 	ai_charge, 0,  NULL,
 	ai_charge, 0,  NULL
 };
-mmove_t soldierq25_move_attack1 = {FRAME_attak101, FRAME_attak112, soldierq25_frames_attack1, soldierh_run};
+mmove_t soldierq25_move_attack1 = {FRAME_attak101, FRAME_attak112, soldierq25_frames_attack1, soldierq25_run};
+
+// ATTACK2 (blaster/shotgun)
 
 void soldierq25_fire2 (edict_t *self)
 {
@@ -3950,7 +3957,9 @@ mframe_t soldierq25_frames_attack2 [] =
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL
 };
-mmove_t soldierq25_move_attack2 = {FRAME_attak201, FRAME_attak218, soldierq25_frames_attack2, soldierh_run};
+mmove_t soldierq25_move_attack2 = {FRAME_attak201, FRAME_attak218, soldierq25_frames_attack2, soldierq25_run};
+
+// ATTACK3 (duck and shoot)
 
 void soldierq25_fire3 (edict_t *self)
 {
@@ -3970,7 +3979,9 @@ mframe_t soldierq25_frames_attack3 [] =
 	ai_charge, 0, NULL,
 	ai_charge, 0, NULL
 };
-mmove_t soldierq25_move_attack3 = {FRAME_attak301, FRAME_attak309, soldierq25_frames_attack3, soldierh_run};
+mmove_t soldierq25_move_attack3 = {FRAME_attak301, FRAME_attak309, soldierq25_frames_attack3, soldierq25_run};
+
+// ATTACK6 (run & shoot)
 
 void soldierq25_fire8 (edict_t *self)
 {
@@ -3994,19 +4005,7 @@ mframe_t soldierq25_frames_attack6 [] =
 	ai_charge, 12, NULL,
 	ai_charge, 17, soldierh_attack6_refire
 };
-mmove_t soldierq25_move_attack6 = {FRAME_runs01, FRAME_runs14, soldierq25_frames_attack6, soldierh_run};
-
-void soldierq25_sight (edict_t *self, edict_t *other)
-{
-	if (random() < 0.5)
-		gi.sound (self, CHAN_VOICE, q25_sound_sight1, 1, ATTN_NORM, 0);
-	else
-		gi.sound (self, CHAN_VOICE, q25_sound_sight2, 1, ATTN_NORM, 0);
-
-	if ((skill->value > 0) && (range(self, self->enemy) >= RANGE_MID))
-		if (random() > 0.5)
-			self->monsterinfo.currentmove = &soldierq25_move_attack6;
-}
+mmove_t soldierq25_move_attack6 = {FRAME_runs01, FRAME_runs14, soldierq25_frames_attack6, soldierq25_run};
 
 void soldierq25_attack (edict_t *self)
 {
@@ -4054,6 +4053,24 @@ void soldierq25_attack (edict_t *self)
 	}
 }
 
+// SIGHT
+
+void soldierq25_sight (edict_t *self, edict_t *other)
+{
+	if (random() < 0.5)
+		gi.sound (self, CHAN_VOICE, q25_sound_sight1, 1, ATTN_NORM, 0);
+	else
+		gi.sound (self, CHAN_VOICE, q25_sound_sight2, 1, ATTN_NORM, 0);
+
+	if ((skill->value > 0) && (range(self, self->enemy) >= RANGE_MID))
+		if (random() > 0.5)
+			self->monsterinfo.currentmove = &soldierq25_move_attack6;
+}
+
+// NEW DODGE CODE
+
+mmove_t soldierq25_move_duck = {FRAME_duck01, FRAME_duck05, soldierh_frames_duck, soldierq25_run};
+
 void soldierq25_sidestep (edict_t *self)
 {
 	if ((self->monsterinfo.currentmove != &soldierq25_move_attack6))
@@ -4069,7 +4086,7 @@ void soldierq25_duck (edict_t *self, float eta)
 	if (skill->value == 0)
 	{
 		self->monsterinfo.nextframe = FRAME_duck01;
-		self->monsterinfo.currentmove = &soldier_move_duck;
+		self->monsterinfo.currentmove = &soldierq25_move_duck;
 		self->monsterinfo.duck_wait_time = level.time + eta + 1;
 		return;
 	}
@@ -4079,7 +4096,7 @@ void soldierq25_duck (edict_t *self, float eta)
 	if (r > (skill->value * 0.3))
 	{
 		self->monsterinfo.nextframe = FRAME_duck01;
-		self->monsterinfo.currentmove = &soldier_move_duck;
+		self->monsterinfo.currentmove = &soldierq25_move_duck;
 		self->monsterinfo.duck_wait_time = level.time + eta + (0.1 * (3 - skill->value));
 	}
 	else
@@ -4090,6 +4107,109 @@ void soldierq25_duck (edict_t *self, float eta)
 	}
 	return;
 }
+
+// DEATH
+
+void soldierq25_fire6 (edict_t *self)
+{
+	soldierq25_fire (self, 5);
+}
+
+void soldierq25_fire7 (edict_t *self)
+{
+	soldierq25_fire (self, 6);
+}
+
+mframe_t soldierq25_frames_death1 [] =
+{
+	ai_move, 0,   NULL,
+	ai_move, -10, NULL,
+	ai_move, -10, NULL,
+	ai_move, -10, NULL,
+	ai_move, -5,  NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+
+	ai_move, 0,   NULL,
+	ai_move, 0,   soldierq25_fire6,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   soldierq25_fire7,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL,
+	ai_move, 0,   NULL
+};
+mmove_t soldierq25_move_death1 = {FRAME_death101, FRAME_death136, soldierq25_frames_death1, soldierh_dead};
+
+void soldierq25_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
+{
+	int		n;
+
+	if (self->health <= self->gib_health && !(self->spawnflags & SF_MONSTER_NOGIB))
+	{
+		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
+		for (n = 0; n < 3; n++)
+			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", 0, 0, damage, GIB_ORGANIC);
+		ThrowGib (self, "models/objects/gibs/chest/tris.md2", 0, 0, damage, GIB_ORGANIC);
+		ThrowHead (self, "models/objects/gibs/head2/tris.md2", 0, 0, damage, GIB_ORGANIC);
+		
+		self->deadflag = DEAD_DEAD;
+		return;
+	}
+
+	if (self->deadflag == DEAD_DEAD)
+		return;
+
+	self->s.skinnum |= 1;
+	self->deadflag = DEAD_DEAD;
+	self->takedamage = DAMAGE_YES;
+	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;
+
+	gi.sound (self, CHAN_VOICE, q25_sound_death, 1, ATTN_NORM, 0);
+
+	if (fabs((self->s.origin[2] + self->viewheight) - point[2]) <= 4)
+	{
+		self->monsterinfo.currentmove = &soldierh_move_death3;
+		return;
+	}
+
+	n = rand() % 5;
+	if (n == 0)
+		self->monsterinfo.currentmove = &soldierq25_move_death1;
+	else if (n == 1)
+		self->monsterinfo.currentmove = &soldierh_move_death2;
+	else if (n == 2)
+		self->monsterinfo.currentmove = &soldierh_move_death4;
+	else if (n == 3)
+		self->monsterinfo.currentmove = &soldierh_move_death5;
+	else
+		self->monsterinfo.currentmove = &soldierh_move_death6;
+}
+
+// SPAWN
 
 void SP_monster_soldier_q25 (edict_t *self)
 {
@@ -4118,7 +4238,7 @@ void SP_monster_soldier_q25 (edict_t *self)
 
 	self->monsterinfo.stand = soldierq25_stand;
 	self->monsterinfo.walk = soldierh_walk;
-	self->monsterinfo.run = soldierh_run;
+	self->monsterinfo.run = soldierq25_run;
 	self->monsterinfo.dodge = M_MonsterDodge;
 	self->monsterinfo.attack = soldierq25_attack;
 	self->monsterinfo.melee = NULL;
@@ -4135,7 +4255,7 @@ void SP_monster_soldier_q25 (edict_t *self)
 
 	if (monsterjump->value)
 	{
-		self->monsterinfo.jump = soldierh_jump;
+		self->monsterinfo.jump = soldierq25_jump;
 		self->monsterinfo.jumpup = 48;
 		self->monsterinfo.jumpdn = 160;
 	}
@@ -4155,11 +4275,10 @@ void SP_monster_soldier_q25 (edict_t *self)
 
 	gi.linkentity (self);
 
-//	self->monsterinfo.stand (self);
-	self->monsterinfo.currentmove = &soldierh_move_stand3;	
+	self->monsterinfo.currentmove = &soldierq25_move_stand3;	
 	if (self->health < 0)
 	{
-		mmove_t	*deathmoves[] = {&soldierh_move_death1,
+		mmove_t	*deathmoves[] = {&soldierq25_move_death1,
 			                     &soldierh_move_death2,
 								 &soldierh_move_death3,
 								 &soldierh_move_death4,
@@ -4219,4 +4338,3 @@ void SP_monster_soldier_dist(edict_t* self)
 		self->skinnum = 4;	// Knightmare- simplify skinnum checks by excluding custom styles
 	}
 }
-
