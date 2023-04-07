@@ -4313,8 +4313,11 @@ void SP_monster_soldier_dist(edict_t* self)
 	if (!self->gib_health)
 		self->gib_health = -40;
 
+	self->monsterinfo.power_armor_type = POWER_ARMOR_SCREEN;
+	self->monsterinfo.power_armor_power = 40;
+
 	// PMM - blindfire
-	self->monsterinfo.blindfire = false;
+	self->monsterinfo.blindfire = true;
 
 	// Knightmare- call generic spawn function LAST, because it
 	// calls walkmonster_start, which the health and everything else need to be set up for
