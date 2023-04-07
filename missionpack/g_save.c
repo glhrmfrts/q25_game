@@ -393,6 +393,10 @@ only happens when a new game is started or a save game
 is loaded.
 ============
 */
+
+// Phatman: Required for Q2PRO
+#define GMF_ENHANCED_SAVEGAMES  0x00000400
+
 void ReadTextureSurfaceAssignments();
 void InitGame (void)
 {
@@ -400,6 +404,9 @@ void InitGame (void)
 
 	// Knightmare- init lithium cvars
 	InitLithiumVars ();
+
+	// Phatman: Required for Q2PRO
+	gi.cvar_forceset("g_features", va("%d", GMF_ENHANCED_SAVEGAMES));
 
 	gun_x = gi.cvar ("gun_x", "0", 0);
 	gun_y = gi.cvar ("gun_y", "0", 0);

@@ -114,11 +114,7 @@ __inline int Q_vsnprintf (char *Dest, size_t Count, const char *Format, va_list 
 //#define CITADELMOD_FEATURES
 
 #define SAVEGAME_USE_FUNCTION_TABLE
-#ifdef CITADELMOD_FEATURES
-#define SAVEGAME_DLLNAME "Citadel Quake II mod"
-#else
-#define SAVEGAME_DLLNAME "Rogue + Xatrix + Lazarus integrated mod"
-#endif	// CITADELMOD_FEATURES
+#define SAVEGAME_DLLNAME "Quake II 25th Anniversary Mod"
 #define SAVEGAME_VERSION 6
 
 // angle indexes
