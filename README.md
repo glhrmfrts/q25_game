@@ -25,3 +25,4 @@ This is the source code for the game DLL of the Quake 2's 25th anniversary UNIT.
 - EmeraldTiger
 - Guggenheim
 - Fix
+- Knightmare
