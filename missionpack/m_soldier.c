@@ -4313,8 +4313,12 @@ void SP_monster_soldier_dist(edict_t* self)
 	if (!self->gib_health)
 		self->gib_health = -40;
 
-	self->monsterinfo.power_armor_type = POWER_ARMOR_SCREEN;
-	self->monsterinfo.power_armor_power = 40;
+	// Knightmare - this will be overruled in SP_monster_soldier_q25 if the self->powerarmor flag is set so don't bother if it is.
+	if (!self->powerarmor)
+	{
+		self->monsterinfo.power_armor_type = POWER_ARMOR_SCREEN;
+		self->monsterinfo.power_armor_power = 40;
+	}
 
 	// PMM - blindfire
 	self->monsterinfo.blindfire = true;
