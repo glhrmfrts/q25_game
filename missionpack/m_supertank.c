@@ -654,25 +654,28 @@ void BossExplode (edict_t *self)
 	case 9:
 		self->s.sound = 0;
 
+#ifdef KMQUAKE2_ENGINE_MOD
 		// Knightmare- big explosion
 		gi.WriteByte (svc_temp_entity);
 		gi.WriteByte (TE_EXPLOSION1_BIG);
 		gi.WritePosition (org);
 		gi.multicast (self->s.origin, MULTICAST_PVS);
+#endif	// KMQUAKE2_ENGINE_MOD
 
 		for (n = 0; n < 4; n++)
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", 0, 0, 500, GIB_ORGANIC);
+		for (n = 0; n < 8; n++)
+			ThrowGib (self, "models/objects/gibs/sm_metal/tris.md2", 0, 0, 500, GIB_METALLIC);
+#ifdef KMQUAKE2_ENGINE_MOD
 		for (n = 0; n < 4; n++)
 			ThrowGib (self, "models/objects/gibs/bone/tris.md2", 0, 0, 500, GIB_ORGANIC);
 		for (n = 0; n < 8; n++)
 			ThrowGib (self, "models/objects/gibs/gear/tris.md2", 0, 0, 500, GIB_METALLIC);
-		for (n = 0; n < 8; n++)
-			ThrowGib (self, "models/objects/gibs/sm_metal/tris.md2", 0, 0, 500, GIB_METALLIC);
-		if (!strcmp(self->classname, "monster_jorg"))
-		{
+		if (!strcmp(self->classname, "monster_jorg")) {
 			for (n = 0; n < 4; n++)
 				ThrowGib (self, "models/monsters/blackwidow/gib3/tris.md2", 0, 0, 500, GIB_METALLIC);
 		}
+#endif	// KMQUAKE2_ENGINE_MOD
 		ThrowGib (self, "models/objects/gibs/chest/tris.md2", 0, 0, 500, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/gear/tris.md2", 0, 0, 500, GIB_METALLIC);
 		self->deadflag = DEAD_DEAD;

@@ -2308,7 +2308,11 @@ void SP_misc_explobox (edict_t *self)
 void misc_blackhole_transparent (edict_t *ent)
 {
 	// Lazarus: This avoids the problem mentioned below.
+#ifdef KMQUAKE2_ENGINE_MOD	// Knightmare- for some reason RF_NOSHADOW makes the model invisible in vanilla Q2
 	ent->s.renderfx = RF_TRANSLUCENT|RF_NOSHADOW;
+#else
+	ent->s.renderfx = RF_TRANSLUCENT;
+#endif	// KMQUAKE2_ENGINE_MOD
 	ent->prethink = NULL;
 	gi.linkentity(ent);
 }
@@ -2344,7 +2348,9 @@ void SP_misc_blackhole (edict_t *ent)
 	VectorSet (ent->mins, -64, -64, 0);
 	VectorSet (ent->maxs, 64, 64, 8);
 	ent->s.modelindex = gi.modelindex ("models/objects/black/tris.md2");
-//	ent->s.renderfx = RF_TRANSLUCENT; David Hyde's fix for this
+//	ent->s.renderfx = RF_TRANSLUCENT;     // Lazarus: For some oddball reason if this is set
+	                                      //          here, blackhole generator will be 
+	                                      //          invisible. Rogue MP has the same problem.
 	ent->use = misc_blackhole_use;
 	ent->think = misc_blackhole_think;
 	ent->prethink = misc_blackhole_transparent;
@@ -3291,7 +3297,7 @@ void SP_misc_strogg_ship (edict_t *ent)
 
 	ent->movetype = MOVETYPE_PUSH;
 	ent->solid = SOLID_NOT;
-	//Mappack
+	// Mappack
 	if ((ent->spawnflags && STROGG_CRASH) || (ent->spawnflags && STROGG_GIB))
 	{
 		if (!ent->health)
