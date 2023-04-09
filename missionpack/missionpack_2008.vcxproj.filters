@@ -568,11 +568,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="game.def">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="missionpack_2008.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>

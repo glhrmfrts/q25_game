@@ -1,3 +1,7 @@
+build*/
+missionpack/Win32
+missionpack/x64
+
 # ignore all make dependency files and linux object binaries
 *.d
 *.o
