@@ -808,6 +808,29 @@ void ED_CallSpawn (edict_t *ent)
 		gi.dprintf ("ED_CallSpawn: NULL classname\n");
 		return;
 	}
+
+	// Q2 25
+	// Skill Stage checks
+	/* NOTE(Fix):
+	 * Our maps are available all at once
+	 * So, in order to provide a more interesting experience,
+	 * we made a cvar and some entity fields that are used to toggle entities
+	 * skill_stage to start appearing - 0 always appears
+	 * skill_stage_stop to stop appearing - 0 never disappears
+	 */
+
+	if (ent->skill_stage > skill_stage->value)
+	{
+		G_FreeEdict(ent);
+		return;
+	}
+
+	if (ent->skill_stage_stop > 0 && ent->skill_stage_stop <= skill_stage->value)
+	{
+		G_FreeEdict(ent);
+		return;
+	}
+
 //PGM - do this before calling the spawn function so it can be overridden.
 #ifdef ROGUE_GRAVITY
 	ent->gravityVector[0] =  0.0;

@@ -172,6 +172,9 @@ field_t fields[] = {
 	{"maxpitch", STOFS(maxpitch), F_FLOAT, FFL_SPAWNTEMP},
 	{"nextmap", STOFS(nextmap), F_LSTRING, FFL_SPAWNTEMP},
 
+	{"skill_stage", FOFS(skill_stage), F_INT},
+	{"skill_stage_stop", FOFS(skill_stage_stop), F_INT},
+
 	{"goal_frame", FOFS(goal_frame), F_FLOAT},
 	{"chasedist1", FOFS(chasedist1), F_INT},
 	{"chasedist2", FOFS(chasedist2), F_INT},

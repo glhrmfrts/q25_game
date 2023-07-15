@@ -2752,6 +2752,11 @@ struct edict_s
 	float		bossFireTimeout;
 	int			bossFireCount;
 // end Zaero
+
+// Begin Q25
+	int skill_stage;
+	int skill_stage_stop;
+// End Q25
 };
 
 //=============
