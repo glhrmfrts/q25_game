@@ -60,7 +60,7 @@ void bigflame_think (edict_t *self)
 	self->s.frame++;
 	if (self->s.frame == 16)
 		self->s.frame = 6;
-	
+
 	self->nextthink = level.time + FRAMETIME;
 }
 
@@ -121,7 +121,7 @@ void Cmd_Trigger_f (edict_t *ent)
 			if (t->classname == "target_mappack_laser")
 			{
 				if (t->spawnflags & 1)
-					target_laser_off (t);			
+					target_laser_off (t);
 			}
 			if (t->classname == "mappack_light")
 			{
@@ -137,7 +137,7 @@ void Cmd_Trigger_f (edict_t *ent)
 	Turn target on
 	=============
 	*/
-		case 2: 
+		case 2:
 			if (!t)
 				return;
 			if (t->classname == "target_satan_laser")

@@ -1126,7 +1126,8 @@ qboolean Pickup_Key (edict_t *ent, edict_t *other)
 		"key_commander_head",
 		"key_pass",
 		"key_data_spinner",
-		"key_airstrike_target"
+		"key_airstrike_target",
+		"key_red_key"
 	};
 	int i;
 	for (i = 0; i < sizeof(stageItems)/sizeof(stageItems[0]); i++)
