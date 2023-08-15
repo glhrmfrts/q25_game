@@ -1,6 +1,8 @@
 # Quake 2's 25th anniversary UNIT
 
-**NOTE:** This repository has been archived and moved to https://github.com/Quake-2-Level-Design-Community/q225acu/
+**NOTE:** This repository has been archived and moved to: https://github.com/Quake-2-Level-Design-Community/q225acu/
+
+---
 
 This is the source code for the game DLL of the Quake 2's 25th anniversary UNIT.
 
